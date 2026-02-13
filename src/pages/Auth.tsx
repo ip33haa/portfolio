@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Login from '../components/Login'
 import Register from '../components/Register'
 import SplashCursor from '../components/SplashCursor'
+import Lanyard from '../components/Lanyard'
+// Removed ReflectiveCard import as it is no longer needed
 
 function useHashMode() {
   const getMode = () => {
@@ -75,16 +77,13 @@ const AuthPage: React.FC = () => {
           {/* Right: spline placeholder */}
           <div className="order-first md:order-last flex items-center justify-center">
             <div className="w-full max-w-3xl">
-              <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-[#07102a] to-[#02040a] p-6 shadow-inner md:h-[720px] md:p-10">
-                <div className="spline-placeholder flex h-full w-full items-center justify-center rounded-lg">
-                  <div className="text-center">
-                    <div className="mb-3 text-2xl font-semibold text-white/80">3D Scene Placeholder</div>
-                    <div className="text-sm text-white/60">Spline scene will be embedded here. Interactive 3D viewport goes to the right on large screens.</div>
+                <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-[#07102a] to-[#02040a] p-6 shadow-inner md:h-[720px] md:p-10 flex items-center justify-center">
+                  <div style={{ height: '600px', position: 'relative' }}>
+                    <Lanyard position={[0, 0, 20]} gravity={[0, -40, 0]} />
                   </div>
+                  <div className="absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-[rgba(34,211,238,0.06)] blur-3xl md:-right-32 md:-bottom-32" aria-hidden />
                 </div>
-                <div className="absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-[rgba(34,211,238,0.06)] blur-3xl md:-right-32 md:-bottom-32" aria-hidden />
               </div>
-            </div>
           </div>
         </div>
       </main>
