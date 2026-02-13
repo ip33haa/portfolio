@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Canvas, extend, useFrame } from '@react-three/fiber';
 import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei';
 import {
@@ -9,17 +9,15 @@ import {
   Physics,
   RigidBody,
   useRopeJoint,
-  useSphericalJoint,
-  RigidBodyProps
+  useSphericalJoint
 } from '@react-three/rapier';
+import type { RigidBodyProps } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
 
 // replace with your own imports, see the usage snippet for details
-import cardGLB from '../assets/lanyard/card.glb';
-import lanyard from '../assets/lanyard/lanyard.png';
-// NOTE: card.glb and lanyard.png are optional project assets.
-// If they are not present, the component will render a simple placeholder card and band.
+import cardGLB from '/card.glb';
+import lanyard from '/lanyard.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -45,7 +43,7 @@ export default function Lanyard({
   }, []);
 
   return (
-    <div className="relative z-0 w-full h-full flex justify-center items-center">
+    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
       <Canvas
         camera={{ position, fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
@@ -64,8 +62,20 @@ export default function Lanyard({
             rotation={[0, 0, Math.PI / 3]}
             scale={[100, 0.1, 1]}
           />
-          <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[-1, -1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
+          <Lightformer
+            intensity={3}
+            color="white"
+            position={[1, 1, 1]}
+            rotation={[0, 0, Math.PI / 3]}
+            scale={[100, 0.1, 1]}
+          />
           <Lightformer
             intensity={10}
             color="white"
@@ -86,6 +96,7 @@ interface BandProps {
 }
 
 function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
+  // Using "any" for refs since the exact types depend on Rapier's internals
   const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
@@ -165,7 +176,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
   });
 
   curve.curveType = 'chordal';
-  if (texture) texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
   return (
     <>
@@ -201,29 +212,28 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
               drag(new THREE.Vector3().copy(e.point).sub(vec.copy(card.current.translation())));
             }}
           >
-            {/* Placeholder card geometry — replace with GLB when available */}
-            <mesh>
-              <boxGeometry args={[1.6, 2.25, 0.02]} />
-              <meshPhysicalMaterial color="#111827" clearcoat={isMobile ? 0 : 1} clearcoatRoughness={0.15} roughness={0.3} metalness={0.6} />
+            <mesh geometry={nodes.card.geometry}>
+              <meshPhysicalMaterial
+                map={materials.base.map}
+                map-anisotropy={16}
+                clearcoat={isMobile ? 0 : 1}
+                clearcoatRoughness={0.15}
+                roughness={0.9}
+                metalness={0.8}
+              />
             </mesh>
-            <mesh position={[0.55, -0.6, 0.02]} scale={[0.25, 0.25, 0.25]}>
-              <cylinderGeometry args={[0.08, 0.08, 0.15, 12]} />
-              <meshStandardMaterial color="#9ca3af" metalness={0.9} roughness={0.25} />
-            </mesh>
-            <mesh position={[-0.55, -0.6, 0.02]} scale={[0.25, 0.25, 0.25]}>
-              <cylinderGeometry args={[0.08, 0.08, 0.15, 12]} />
-              <meshStandardMaterial color="#9ca3af" metalness={0.9} roughness={0.25} />
-            </mesh>
+            <mesh geometry={nodes.clip.geometry} material={materials.metal} material-roughness={0.3} />
+            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
           </group>
         </RigidBody>
       </group>
       <mesh ref={band}>
         <meshLineGeometry />
         <meshLineMaterial
-          color="#08b6d6"
+          color="white"
           depthTest={false}
           resolution={isMobile ? [1000, 2000] : [1000, 1000]}
-          useMap={Boolean(texture)}
+          useMap
           map={texture}
           repeat={[-4, 1]}
           lineWidth={1}

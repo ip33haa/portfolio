@@ -78,7 +78,7 @@ const AuthPage: React.FC = () => {
           <div className="order-first md:order-last flex items-center justify-center">
             <div className="w-full max-w-3xl">
                 <div className="relative h-80 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-[#07102a] to-[#02040a] p-6 shadow-inner md:h-[720px] md:p-10 flex items-center justify-center">
-                  <div style={{ height: '600px', position: 'relative' }}>
+                  <div style={{ height: '600px', width: '100%', position: 'relative' }}>
                     <Lanyard position={[0, 0, 20]} gravity={[0, -40, 0]} />
                   </div>
                   <div className="absolute -right-16 -bottom-16 h-48 w-48 rounded-full bg-[rgba(34,211,238,0.06)] blur-3xl md:-right-32 md:-bottom-32" aria-hidden />
