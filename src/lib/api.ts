@@ -33,10 +33,16 @@ export async function login(email: string, password: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   })
-
   if (!res.ok) {
     const txt = await res.text()
-    throw { message: txt || res.statusText, status: res.status }
+    try {
+      const json = JSON.parse(txt)
+      // prefer structured message
+      const msg = json.message || (json.errors && Array.isArray(json.errors) ? json.errors.map((e: any) => e.message || e).join(', ') : null)
+      throw { message: msg || txt || res.statusText, status: res.status, body: json }
+    } catch {
+      throw { message: txt || res.statusText, status: res.status }
+    }
   }
 
   const data = await res.json()
@@ -67,10 +73,15 @@ export async function register(email: string, password: string) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   })
-
   if (!res.ok) {
     const txt = await res.text()
-    throw { message: txt || res.statusText, status: res.status }
+    try {
+      const json = JSON.parse(txt)
+      const msg = json.message || (json.errors && Array.isArray(json.errors) ? json.errors.map((e: any) => e.message || e).join(', ') : null)
+      throw { message: msg || txt || res.statusText, status: res.status, body: json }
+    } catch {
+      throw { message: txt || res.statusText, status: res.status }
+    }
   }
 
   const data = await res.json()
@@ -115,6 +126,9 @@ async function apiFetch(path: string, options: RequestInit = {}) {
       res = await fetch(url, { ...options, headers })
     }
   }
+
+  // Treat 404 as a missing resource (return null) instead of throwing an error
+  if (res.status === 404) return null
 
   if (!res.ok) {
     const txt = await res.text()

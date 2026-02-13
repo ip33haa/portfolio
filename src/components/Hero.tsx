@@ -38,7 +38,7 @@ export function Hero() {
       </div>
 
       <header className="relative z-10">
-        <Nav onSignIn={() => setShowLogin(true)} onRegister={() => setShowRegister(true)} />
+        <Nav onSignIn={() => { window.location.hash = '#/auth?mode=login' }} onRegister={() => { window.location.hash = '#/auth?mode=register' }} />
       </header>
 
       <div className="mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
@@ -221,11 +221,7 @@ function Nav({ onSignIn, onRegister }: { onSignIn?: () => void; onRegister?: () 
       <div className="flex items-center justify-end">
         {/* Contact CTA visible on md+ */}
         <div className="hidden md:flex items-center gap-3">
-          <a href="#contact">
-            <button className="hero-primary-btn hero-nav-cta">Contact Me</button>
-          </a>
-          <button onClick={() => onSignIn?.()} className="rounded-md border border-white/10 px-3 py-2 text-sm text-white/90">Sign In</button>
-          <button onClick={() => onRegister?.()} className="rounded-md border border-white/10 px-3 py-2 text-sm text-white/90">Register</button>
+          <button onClick={() => onSignIn?.()} className="hero-primary-btn hero-nav-cta">Contact Me</button>
         </div>
 
         {/* Hamburger for small screens */}
@@ -278,14 +274,8 @@ function Nav({ onSignIn, onRegister }: { onSignIn?: () => void; onRegister?: () 
                   </li>
                 </ul>
                 <div className="mt-6">
-                  <a href="#contact">
-                    <button className="hero-primary-btn w-full">Contact Me</button>
-                  </a>
-                  <div className="mt-4">
-                    <button onClick={() => { setOpen(false); onSignIn?.() }} className="w-full rounded-md border border-white/10 px-3 py-2 text-white">Sign In</button>
-                  </div>
-                  <div className="mt-3">
-                    <button onClick={() => { setOpen(false); onRegister?.() }} className="w-full rounded-md border border-white/10 px-3 py-2 text-white">Register</button>
+                  <div>
+                    <button onClick={() => { setOpen(false); onSignIn?.() }} className="hero-primary-btn w-full">Contact Me</button>
                   </div>
                 </div>
               </nav>

@@ -257,8 +257,12 @@ const DotGrid: React.FC<DotGridProps> = ({
           gsap.killTweensOf(dot)
           const pushX = dot.cx - pr.x + vx * 0.005
           const pushY = dot.cy - pr.y + vy * 0.005
+          // Avoid using the commercial InertiaPlugin — animate numeric offsets directly
           gsap.to(dot, {
-            inertia: { xOffset: pushX, yOffset: pushY, resistance },
+            xOffset: pushX,
+            yOffset: pushY,
+            duration: Math.max(0.35, Math.min(0.9, (resistance || 500) / 1200)),
+            ease: 'power3.out',
             onComplete: () => {
               gsap.to(dot, {
                 xOffset: 0,
@@ -297,8 +301,12 @@ const DotGrid: React.FC<DotGridProps> = ({
           const falloff = Math.max(0, 1 - dist / shockRadius)
           const pushX = (dot.cx - cx) * shockStrength * falloff
           const pushY = (dot.cy - cy) * shockStrength * falloff
+          // Animate offsets directly instead of using InertiaPlugin
           gsap.to(dot, {
-            inertia: { xOffset: pushX, yOffset: pushY, resistance },
+            xOffset: pushX,
+            yOffset: pushY,
+            duration: Math.max(0.25, Math.min(0.8, (resistance || 500) / 1400)),
+            ease: 'power2.out',
             onComplete: () => {
               gsap.to(dot, {
                 xOffset: 0,
