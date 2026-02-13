@@ -4,12 +4,14 @@ import ProfileCard from './ProfileCard'
 import * as api from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import Login from './Login'
+import Register from './Register'
 
 export function Hero() {
   const [showLogin, setShowLogin] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
 
-  const { data: aboutRaw } = useQuery(['about'], () => api.getAbout(), { staleTime: 1000 * 60 * 5, retry: 1 })
-  const { data: projectsRaw } = useQuery(['projects'], () => api.getProjects(), { staleTime: 1000 * 60 * 2, retry: 1 })
+  const { data: aboutRaw } = useQuery({ queryKey: ['about'], queryFn: () => api.getAbout(), staleTime: 1000 * 60 * 5, retry: 1 })
+  const { data: projectsRaw } = useQuery({ queryKey: ['projects'], queryFn: () => api.getProjects(), staleTime: 1000 * 60 * 2, retry: 1 })
 
   const about = aboutRaw?.data ?? aboutRaw
   const projects = (projectsRaw?.data ?? projectsRaw) || []
@@ -36,7 +38,7 @@ export function Hero() {
       </div>
 
       <header className="relative z-10">
-        <Nav onSignIn={() => setShowLogin(true)} />
+        <Nav onSignIn={() => setShowLogin(true)} onRegister={() => setShowRegister(true)} />
       </header>
 
       <div className="mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
@@ -173,13 +175,14 @@ export function Hero() {
         </div>
       </section>
       {showLogin && <Login onClose={() => setShowLogin(false)} />}
+      {showRegister && <Register onClose={() => setShowRegister(false)} />}
     </section>
   )
 }
 
 export default Hero
 
-function Nav({ onSignIn }: { onSignIn?: () => void }) {
+function Nav({ onSignIn, onRegister }: { onSignIn?: () => void; onRegister?: () => void }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -222,6 +225,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
             <button className="hero-primary-btn hero-nav-cta">Contact Me</button>
           </a>
           <button onClick={() => onSignIn?.()} className="rounded-md border border-white/10 px-3 py-2 text-sm text-white/90">Sign In</button>
+          <button onClick={() => onRegister?.()} className="rounded-md border border-white/10 px-3 py-2 text-sm text-white/90">Register</button>
         </div>
 
         {/* Hamburger for small screens */}
@@ -277,6 +281,12 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
                   <a href="#contact">
                     <button className="hero-primary-btn w-full">Contact Me</button>
                   </a>
+                  <div className="mt-4">
+                    <button onClick={() => { setOpen(false); onSignIn?.() }} className="w-full rounded-md border border-white/10 px-3 py-2 text-white">Sign In</button>
+                  </div>
+                  <div className="mt-3">
+                    <button onClick={() => { setOpen(false); onRegister?.() }} className="w-full rounded-md border border-white/10 px-3 py-2 text-white">Register</button>
+                  </div>
                 </div>
               </nav>
             </div>

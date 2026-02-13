@@ -28,12 +28,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuth({ accessToken: data.accessToken, expiresAt: data.expiresAt })
   }
 
+  const register = async (email: string, password: string) => {
+    const data = await api.register(email, password)
+    setAuth({ accessToken: data.accessToken, expiresAt: data.expiresAt })
+  }
+
   const logout = async () => {
     await api.logout()
     setAuth(null)
   }
 
-  return <AuthContext.Provider value={{ auth, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ auth, login, logout, register } as any}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {

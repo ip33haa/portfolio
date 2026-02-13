@@ -61,6 +61,23 @@ export async function logout() {
   localStorage.removeItem('auth')
 }
 
+export async function register(email: string, password: string) {
+  const res = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+
+  if (!res.ok) {
+    const txt = await res.text()
+    throw { message: txt || res.statusText, status: res.status }
+  }
+
+  const data = await res.json()
+  saveAuth(data)
+  return data
+}
+
 export async function refreshAccessToken(): Promise<string | null> {
   const auth = loadAuth()
   if (!auth?.refreshToken) return null
