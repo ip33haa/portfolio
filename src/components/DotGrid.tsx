@@ -165,7 +165,7 @@ const DotGrid: React.FC<DotGridProps> = ({
         ctx.save();
         ctx.translate(ox, oy);
         ctx.fillStyle = style;
-        if (circlePath) ctx.fill(circlePath as unknown as CanvasPath);
+        if (circlePath) ctx.fill(circlePath);
         ctx.restore();
       }
 
@@ -193,7 +193,6 @@ const DotGrid: React.FC<DotGridProps> = ({
 
   useEffect(() => {
     // lazily import gsap and plugin when component mounts
-    let didCancel = false
     ;(async () => {
       try {
         const mod = await import('gsap')

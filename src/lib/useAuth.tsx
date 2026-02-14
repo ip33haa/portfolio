@@ -6,6 +6,7 @@ type AuthState = { accessToken?: string; expiresAt?: number } | null
 const AuthContext = createContext<{
   auth: AuthState
   login: (email: string, password: string) => Promise<void>
+  register: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
 } | null>(null)
 
@@ -39,7 +40,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, register } as any}>
+    <AuthContext.Provider value={{ auth, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import Spline from '@splinetool/react-spline'
 import DotGrid from './DotGrid'
+import TextType from './TextType'
 import ProfileCard from './ProfileCard'
 import * as api from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
@@ -17,64 +19,74 @@ export function Hero() {
   const projects = (projectsRaw?.data ?? projectsRaw) || []
 
   return (
-    <section className="hero-shell relative overflow-hidden">
-      <div className="hero-glow" aria-hidden="true" />
-      <div className="hero-grid" aria-hidden="true" />
+    <section className="hero-shell">
+      <div className="hero-stage relative overflow-hidden">
+        {/* DotGrid background */}
+        <div className="absolute inset-0 z-0 opacity-60">
+          <DotGrid
+            dotSize={6}
+            gap={20}
+            baseColor="#0a0f1f"
+            activeColor="#22d3ee"
+            proximity={140}
+            shockRadius={200}
+            shockStrength={6}
+            resistance={600}
+            returnDuration={1.5}
+            className="h-full w-full"
+          />
+        </div>
 
-      {/* DotGrid background */}
-      <div className="absolute inset-0 z-0 opacity-95">
-        <DotGrid
-          dotSize={6}
-          gap={20}
-          baseColor="#0a0f1f"
-          activeColor="#22d3ee"
-          proximity={140}
-          shockRadius={200}
-          shockStrength={6}
-          resistance={600}
-          returnDuration={1.5}
-          className="h-full w-full"
-        />
-      </div>
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          <Spline
+            scene="https://prod.spline.design/UxCl2VYZxAvj0Pol/scene.splinecode"
+            className="h-full w-full"
+            style={{ background: 'transparent' }}
+          />
+        </div>
 
-      <header className="relative z-10">
-        <Nav onSignIn={() => { window.location.hash = '#/auth?mode=login' }} onRegister={() => { window.location.hash = '#/auth?mode=register' }} />
-      </header>
+        <div className="hero-veil" aria-hidden="true" />
+        <div className="hero-vignette" aria-hidden="true" />
+        <div className="hero-grain" aria-hidden="true" />
 
-      <div className="mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
-        <div className="grid w-full gap-12 lg:grid-cols-2 lg:items-center">
+        <header className="relative z-10">
+          <Nav onSignIn={() => { window.location.hash = '#/auth?mode=login' }} />
+        </header>
 
-          {/* Left: textual placeholders (role, name, copy, CTAs) */}
-          <div className="hero-fade space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.25em] text-white/70">
-              <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
-              Placeholder Role
-            </div>
-            <h1 className="font-display text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-              Placeholder Name
-            </h1>
-            <p className="max-w-xl text-base text-white/70 sm:text-lg">
-              Placeholder headline about building clean and scalable systems. Replace with final copy when ready.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button className="hero-primary-btn">View Projects</button>
-              <button className="hero-secondary-btn">Contact Me</button>
-            </div>
-            <div className="text-xs uppercase tracking-[0.3em] text-white/40">
-              Available for select collaborations
-            </div>
-          </div>
+        <div className="relative z-10 mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
+          <div className="grid w-full gap-12 lg:grid-cols-2 lg:items-center">
 
-          {/* Right: Spline placeholder (will embed Spline scene here later) */}
-          <div className="hero-fade flex items-center justify-center">
-            <div className="hero-spline-frame w-full max-w-md">
-              <div className="spline-placeholder flex h-72 w-full items-center justify-center rounded-[18px]">
-                <div className="text-center text-sm text-white/60">
-                  3D Spline placeholder
-                  <div className="mt-2 text-xs text-white/40">Embed Spline scene here</div>
-                </div>
+            {/* Left: textual placeholders (role, name, copy, CTAs) */}
+            <div className="hero-fade hero-text space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.25em] text-white/70">
+                <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
+                Placeholder Role
+              </div>
+              <h1 className="hero-title font-display text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
+                <TextType
+                  as="span"
+                  text={["Text typing effect", "for your websites", "Happy coding!"]}
+                  typingSpeed={75}
+                  pauseDuration={1500}
+                  showCursor
+                  cursorCharacter="_"
+                  deletingSpeed={50}
+                  cursorBlinkDuration={0.5}
+                />
+              </h1>
+              <p className="hero-subtitle max-w-xl text-base text-white/70 sm:text-lg">
+                Placeholder headline about building clean and scalable systems. Replace with final copy when ready.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="hero-primary-btn">View Projects</button>
+                <button className="hero-secondary-btn">Contact Me</button>
+              </div>
+              <div className="text-xs uppercase tracking-[0.3em] text-white/40">
+                Available for select collaborations
               </div>
             </div>
+
+            <div className="hidden lg:block" />
           </div>
         </div>
       </div>
@@ -119,8 +131,7 @@ export function Hero() {
                 enableTilt={true}
                 enableMobileTilt
                 onContactClick={() => console.log('Contact clicked')}
-                showIcon
-                showBehindGlow
+                behindGlowEnabled
                 behindGlowColor={about?.behindGlowColor ?? 'rgba(125, 190, 255, 0.67)'}
                 innerGradient={about?.innerGradient ?? 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)'}
               />
@@ -182,7 +193,7 @@ export function Hero() {
 
 export default Hero
 
-function Nav({ onSignIn, onRegister }: { onSignIn?: () => void; onRegister?: () => void }) {
+function Nav({ onSignIn }: { onSignIn?: () => void }) {
   const [open, setOpen] = useState(false)
 
   return (

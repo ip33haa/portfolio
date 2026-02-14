@@ -133,11 +133,44 @@
 }
 
 .hero-shell {
-  background:
-    radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15), transparent 45%),
-    radial-gradient(circle at 80% 15%, rgba(14, 116, 144, 0.25), transparent 48%),
-    linear-gradient(135deg, #0a0f1f 0%, #0c1429 45%, #0b1a2b 100%);
+  background: #070b14;
   color: #f8fafc;
+}
+
+.hero-stage {
+  position: relative;
+}
+
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5, 8, 16, 0.9) 0%, rgba(5, 8, 16, 0.65) 38%, rgba(5, 8, 16, 0) 70%);
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: -8% -4% -12% -4%;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 0) 28%, rgba(0, 0, 0, 0.55) 64%, rgba(0, 0, 0, 0.85) 100%);
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.06) 0.5px, transparent 0.6px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.04) 0.4px, transparent 0.5px);
+  background-size: 4px 4px, 3px 3px;
+  background-position: 0 0, 1px 1px;
+  opacity: 0.25;
+  mix-blend-mode: soft-light;
 }
 
 .hero-glow {
@@ -181,11 +214,11 @@
 .hero-primary-btn {
   border-radius: 999px;
   padding: 12px 26px;
-  background: linear-gradient(135deg, #38bdf8, #22d3ee);
-  color: #0b1120;
+  background: linear-gradient(135deg, #9fe7ff, #4bd5ff);
+  color: #071018;
   font-weight: 600;
   transition: transform 200ms ease, box-shadow 200ms ease;
-  box-shadow: 0 10px 30px rgba(34, 211, 238, 0.35);
+  box-shadow: 0 12px 34px rgba(79, 213, 255, 0.28);
 }
 
 .hero-primary-btn:hover {
@@ -271,9 +304,9 @@
 .hero-secondary-btn {
   border-radius: 999px;
   padding: 12px 26px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  color: #e2e8f0;
+  background: rgba(10, 16, 28, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  color: #eef2f7;
   font-weight: 600;
   transition: transform 200ms ease, border-color 200ms ease;
 }
@@ -281,6 +314,19 @@
 .hero-secondary-btn:hover {
   transform: translateY(-1px);
   border-color: rgba(56, 189, 248, 0.6);
+}
+
+.hero-text {
+  max-width: 34rem;
+  text-shadow: 0 12px 30px rgba(2, 6, 23, 0.45);
+}
+
+.hero-title {
+  letter-spacing: -0.015em;
+}
+
+.hero-subtitle {
+  color: rgba(226, 232, 240, 0.78);
 }
 
 @keyframes hero-fade {
