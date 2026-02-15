@@ -6,8 +6,8 @@ const ContactFormsList: React.FC = () => {
   const queryClient = useQueryClient()
   const { data: contacts } = useQuery({ queryKey: ['admin','contacts'], queryFn: () => api.getContactForms() })
 
-  const markMut = useMutation({ mutationFn: (id: any) => api.markContactFormAsRead(id), onSuccess: () => queryClient.invalidateQueries(['admin','contacts']) })
-  const delMut = useMutation({ mutationFn: (id: any) => api.deleteContactFormSubmission(id), onSuccess: () => queryClient.invalidateQueries(['admin','contacts']) })
+  const markMut = useMutation({ mutationFn: (id: any) => api.markContactFormAsRead(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin','contacts'] }) })
+  const delMut = useMutation({ mutationFn: (id: any) => api.deleteContactFormSubmission(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin','contacts'] }) })
 
   return (
     <div>

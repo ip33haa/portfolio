@@ -8,11 +8,11 @@ const ProjectsList: React.FC = () => {
   const { data: projects } = useQuery({ queryKey: ['admin','projects'], queryFn: () => api.getProjects() })
   const [editing, setEditing] = useState<any | null>(null)
 
-  const createMut = useMutation({ mutationFn: (payload: any) => api.createProject(payload), onSuccess: () => queryClient.invalidateQueries(['admin','projects']) })
+  const createMut = useMutation({ mutationFn: (payload: any) => api.createProject(payload), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin','projects'] }) })
 
-  const updateMut = useMutation({ mutationFn: ({ id, payload }: any) => api.updateProject(id, payload), onSuccess: () => queryClient.invalidateQueries(['admin','projects']) })
+  const updateMut = useMutation({ mutationFn: ({ id, payload }: any) => api.updateProject(id, payload), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin','projects'] }) })
 
-  const deleteMut = useMutation({ mutationFn: (id: any) => api.deleteProject(id), onSuccess: () => queryClient.invalidateQueries(['admin','projects']) })
+  const deleteMut = useMutation({ mutationFn: (id: any) => api.deleteProject(id), onSuccess: () => queryClient.invalidateQueries({ queryKey: ['admin','projects'] }) })
 
   const handleSave = async (payload: any) => {
     if (payload.id) {
