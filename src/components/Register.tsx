@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../lib/useAuth'
+import * as api from '../lib/api'
 
 const Register: React.FC<{ onClose?: () => void; inline?: boolean; onSwitch?: () => void; focusKey?: number }> = ({ onClose, inline = false, onSwitch, focusKey }) => {
   const { register } = useAuth()
@@ -21,6 +22,24 @@ const Register: React.FC<{ onClose?: () => void; inline?: boolean; onSwitch?: ()
     try {
       await register(email, password)
       onClose?.()
+      // determine role from saved token and redirect accordingly
+      try {
+        const token = api.getAuth()?.accessToken
+        if (token) {
+          const parts = token.split('.')
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
+            const role = payload?.role ?? payload?.Role ?? null
+            window.location.hash = role === 'Admin' ? '#/admin' : '#/'
+          } else {
+            window.location.hash = '#/'
+          }
+        } else {
+          window.location.hash = '#/'
+        }
+      } catch {
+        try { window.location.hash = '#/' } catch { /* no-op */ }
+      }
     } catch (err: any) {
       const msg = err?.message ?? (typeof err === 'string' ? err : err?.body?.message ?? (err?.errors ? JSON.stringify(err.errors) : null))
       setError(msg || 'Registration failed')

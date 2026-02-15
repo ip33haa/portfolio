@@ -145,14 +145,23 @@ export function Hero() {
                     {projects.map((p: any) => (
                       <article key={p.id || p.title} className="rounded-lg border border-white/8 bg-white/2 p-4">
                         <div className="flex items-start justify-between gap-4">
-                          <div>
+                          {p.imageUrl ? (
+                            <div className="hidden sm:block w-28 h-20 flex-shrink-0 overflow-hidden rounded-md bg-black/10">
+                              <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div className="hidden sm:block w-28 h-20 flex-shrink-0 overflow-hidden rounded-md bg-white/5 flex items-center justify-center text-sm text-white/60">No image</div>
+                          )}
+
+                          <div className="flex-1">
                             <h4 className="font-semibold text-white">{p.title}</h4>
                             <p className="mt-1 text-sm text-white/70">{p.description}</p>
-                            {p.stack && <div className="mt-2 text-xs text-white/60">Stack: {p.stack}</div>}
+                            { (p.technologiesUsed ?? p.TechnologiesUsed) && <div className="mt-2 text-xs text-white/60">Stack: {p.technologiesUsed ?? p.TechnologiesUsed}</div>}
                           </div>
-                          {p.url && (
+
+                          { (p.projectUrl ?? p.ProjectUrl) && (
                             <div className="flex-shrink-0">
-                              <a href={p.url} target="_blank" rel="noreferrer" className="text-cyan-300 hover:underline">
+                              <a href={p.projectUrl ?? p.ProjectUrl} target="_blank" rel="noreferrer" className="text-cyan-300 hover:underline">
                                 View
                               </a>
                             </div>

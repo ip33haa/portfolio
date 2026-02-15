@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../lib/useAuth'
+import * as api from '../lib/api'
 
 const Login: React.FC<{ onClose?: () => void; inline?: boolean; onSwitch?: () => void; focusKey?: number }> = ({ onClose, inline = false, onSwitch, focusKey }) => {
   const { login } = useAuth()
@@ -16,6 +17,24 @@ const Login: React.FC<{ onClose?: () => void; inline?: boolean; onSwitch?: () =>
     try {
       await login(email, password)
       onClose?.()
+      // determine role from saved token and redirect accordingly
+      try {
+        const token = api.getAuth()?.accessToken
+        if (token) {
+          const parts = token.split('.')
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')))
+            const role = payload?.role ?? payload?.Role ?? null
+            window.location.hash = role === 'Admin' ? '#/admin' : '#/'
+          } else {
+            window.location.hash = '#/'
+          }
+        } else {
+          window.location.hash = '#/'
+        }
+      } catch {
+        try { window.location.hash = '#/' } catch { /* no-op */ }
+      }
     } catch (err: any) {
       // normalize several possible error shapes
       // Prefer backend message, but map 401 to a friendly phrase

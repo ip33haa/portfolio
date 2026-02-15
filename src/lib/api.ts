@@ -174,6 +174,52 @@ export function postContactForm(payload: any) {
   return apiFetch('/contactforms', { method: 'POST', body: JSON.stringify(payload) })
 }
 
+// Admin helpers
+export function createProject(payload: any) {
+  return apiFetch('/projects', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateProject(id: string | number, payload: any) {
+  return apiFetch(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteProject(id: string | number) {
+  return apiFetch(`/projects/${id}`, { method: 'DELETE' })
+}
+
+export function getContactForms() {
+  return apiFetch('/contactforms')
+}
+
+export function getUnreadContactForms() {
+  return apiFetch('/contactforms/unread')
+}
+
+export function markContactFormAsRead(id: string | number) {
+  return apiFetch(`/contactforms/${id}/mark-as-read`, { method: 'PATCH' })
+}
+
+export function deleteContactFormSubmission(id: string | number) {
+  return apiFetch(`/contactforms/${id}`, { method: 'DELETE' })
+}
+
+export async function uploadFile(file: File) {
+  const auth = loadAuth()
+  const form = new FormData()
+  form.append('file', file)
+
+  const headers: Record<string, string> = {}
+  if (auth?.accessToken) headers['Authorization'] = `Bearer ${auth.accessToken}`
+
+  const res = await fetch(`${API_BASE}/uploads`, { method: 'POST', headers, body: form })
+  if (!res.ok) {
+    const txt = await res.text()
+    try { const json = JSON.parse(txt); throw json } catch { throw { message: txt || res.statusText, status: res.status } }
+  }
+  const data = await res.json()
+  return data.url
+}
+
 export default {
   API_BASE,
   refreshAccessToken,
