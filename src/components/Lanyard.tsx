@@ -8,16 +8,16 @@ import {
   CuboidCollider,
   Physics,
   RigidBody,
+  type RigidBodyProps,
   useRopeJoint,
   useSphericalJoint
 } from '@react-three/rapier';
-import type { RigidBodyProps } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 import * as THREE from 'three';
 
 // replace with your own imports, see the usage snippet for details
 const cardGLB = '/card.glb';
-const lanyard = '/lanyard.png';
+import lanyard from '/lanyard.png';
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -26,13 +26,15 @@ interface LanyardProps {
   gravity?: [number, number, number];
   fov?: number;
   transparent?: boolean;
+  heightClass?: string;
 }
 
 export default function Lanyard({
   position = [0, 0, 30],
   gravity = [0, -40, 0],
   fov = 20,
-  transparent = true
+  transparent = true,
+  heightClass = 'h-screen'
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState<boolean>(() => typeof window !== 'undefined' && window.innerWidth < 768);
 
@@ -43,7 +45,7 @@ export default function Lanyard({
   }, []);
 
   return (
-    <div className="relative z-0 w-full h-screen flex justify-center items-center transform scale-100 origin-center">
+    <div className={`relative z-0 w-full ${heightClass} flex justify-center items-center transform scale-100 origin-center`}>
       <Canvas
         camera={{ position, fov }}
         dpr={[1, isMobile ? 1.5 : 2]}
@@ -109,8 +111,10 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
   const rot = new THREE.Vector3();
   const dir = new THREE.Vector3();
 
+  type BodyType = 'dynamic' | 'fixed' | 'kinematicPosition' | 'kinematicVelocity';
+
   const segmentProps: any = {
-    type: 'dynamic' as RigidBodyProps['type'],
+    type: 'dynamic' as BodyType,
     canSleep: true,
     colliders: false,
     angularDamping: 4,
@@ -181,7 +185,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
   return (
     <>
       <group position={[0, 4, 0]}>
-        <RigidBody ref={fixed} {...segmentProps} type={'fixed' as RigidBodyProps['type']} />
+        <RigidBody ref={fixed} {...segmentProps} type={'fixed' as BodyType} />
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps} type={'dynamic' as RigidBodyProps['type']}>
           <BallCollider args={[0.1]} />
         </RigidBody>
@@ -195,7 +199,7 @@ function Band({ maxSpeed = 50, minSpeed = 0, isMobile = false }: BandProps) {
           position={[2, 0, 0]}
           ref={card}
           {...segmentProps}
-          type={dragged ? ('kinematicPosition' as RigidBodyProps['type']) : ('dynamic' as RigidBodyProps['type'])}
+          type={dragged ? ('kinematicPosition' as BodyType) : ('dynamic' as BodyType)}
         >
           <CuboidCollider args={[0.8, 1.125, 0.01]} />
           <group

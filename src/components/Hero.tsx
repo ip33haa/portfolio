@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Spline from '@splinetool/react-spline'
-import DotGrid from './DotGrid'
 import TextType from './TextType'
-import ProfileCard from './ProfileCard'
+import ChromaGrid from './ChromaGrid'
+import DotGrid from './DotGrid'
+import SkillsSection from './SkillsSection'
+import ContactSection from './ContactSection'
 import * as api from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import Login from './Login'
@@ -12,28 +14,30 @@ export function Hero() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
 
-  const { data: aboutRaw } = useQuery({ queryKey: ['about'], queryFn: () => api.getAbout(), staleTime: 1000 * 60 * 5, retry: 1 })
   const { data: projectsRaw } = useQuery({ queryKey: ['projects'], queryFn: () => api.getProjects(), staleTime: 1000 * 60 * 2, retry: 1 })
 
-  const about = aboutRaw?.data ?? aboutRaw
+  const scrollToContact = () => {
+    const el = document.getElementById('contact')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
   const projects = (projectsRaw?.data ?? projectsRaw) || []
 
   return (
-    <section className="hero-shell">
-      <div className="hero-stage relative overflow-hidden">
-        {/* DotGrid background */}
-        <div className="absolute inset-0 z-0 opacity-60">
+    <>
+      <section className="hero-shell min-h-screen snap-start">
+      <div className="hero-stage relative overflow-hidden min-h-screen">
+        {/* DotGrid - overlay scoped to the hero stage */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <DotGrid
-            dotSize={6}
-            gap={20}
-            baseColor="#0a0f1f"
-            activeColor="#22d3ee"
-            proximity={140}
-            shockRadius={200}
-            shockStrength={6}
-            resistance={600}
+            dotSize={5}
+            gap={15}
+            baseColor="#271E37"
+            activeColor="#5227FF"
+            proximity={120}
+            shockRadius={250}
+            shockStrength={5}
+            resistance={750}
             returnDuration={1.5}
-            className="h-full w-full"
           />
         </div>
 
@@ -50,7 +54,7 @@ export function Hero() {
         <div className="hero-grain" aria-hidden="true" />
 
         <header className="relative z-10">
-          <Nav onSignIn={() => { window.location.hash = '#/auth?mode=login' }} />
+          <Nav onSignIn={scrollToContact} />
         </header>
 
         <div className="relative z-10 mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
@@ -60,12 +64,12 @@ export function Hero() {
             <div className="hero-fade hero-text space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.25em] text-white/70">
                 <span className="h-2 w-2 rounded-full bg-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.8)]" />
-                Placeholder Role
+                .NET Developer
               </div>
               <h1 className="hero-title font-display text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
                 <TextType
                   as="span"
-                  text={["Text typing effect", "for your websites", "Happy coding!"]}
+                  text={["Let's build something amazing", "for your websites", "Let's Connect!"]}
                   typingSpeed={75}
                   pauseDuration={1500}
                   showCursor
@@ -75,11 +79,11 @@ export function Hero() {
                 />
               </h1>
               <p className="hero-subtitle max-w-xl text-base text-white/70 sm:text-lg">
-                Placeholder headline about building clean and scalable systems. Replace with final copy when ready.
+                Use headphones for realistic key sounds. Start typing on the interactive 3D keyboard for the full experience.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button className="hero-primary-btn">View Projects</button>
-                <button className="hero-secondary-btn">Contact Me</button>
+                <button onClick={() => { window.location.hash = '#projects' }} className="hero-primary-btn">View Projects</button>
+                <button onClick={scrollToContact} className="hero-secondary-btn">Contact Me</button>
               </div>
               <div className="text-xs uppercase tracking-[0.3em] text-white/40">
                 Available for select collaborations
@@ -90,113 +94,58 @@ export function Hero() {
           </div>
         </div>
       </div>
+      </section>
 
-      {/* Profile panel */}
-      <section id="projects" className="relative z-10 bg-transparent">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20">
+      {/* Skills section placed directly below the hero stage */}
+      <section id="skills" className="relative z-10 min-h-screen snap-start flex items-center">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20 w-full">
+          <SkillsSection />
+        </div>
+      </section>
+
+      <section id="projects" className="relative z-10 bg-transparent min-h-screen snap-start flex items-center">
+        <div className="mx-auto w-full max-w-6xl px-6 py-20 w-full">
           <div className="mb-8 text-center">
-            <h2 className="font-display text-3xl font-semibold text-white">Profile</h2>
-            <p className="mt-2 text-sm text-white/70">A quick profile preview — details on the right.</p>
+            <h2 className="font-display text-2xl font-semibold text-white">Projects</h2>
+            <p className="mt-2 text-sm text-white/70">A visual showcase of selected projects.</p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2 items-start">
-            <div
-              className="flex justify-center lg:justify-start"
-              style={{
-                // apply provided icon overlay CSS variables so ProfileCard picks them up
-                '--icon': 'url(/logo-overlay.png)',
-                '--grain': 'url(/logo-overlay.png)',
-                '--inner-gradient': 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)',
-                '--behind-glow-color': 'rgba(125, 190, 255, 0.67)',
-                '--behind-glow-size': '50%',
-                '--pointer-x': '50.00918879070229%',
-                '--pointer-y': '50.000372784121886%',
-                '--background-x': '50.003%',
-                '--background-y': '50%',
-                '--pointer-from-center': '0.00018392698831004706',
-                '--pointer-from-top': '0.5000037278412188',
-                '--pointer-from-left': '0.5000918879070229',
-                '--rotate-x': '-0.002deg',
-                '--rotate-y': '0deg'
-              } as React.CSSProperties}
-            >
-              <ProfileCard
-                name={about?.name ?? 'John Philip Garcia'}
-                title={about?.title ?? 'Full Stack Developer'}
-                handle={about?.handle ?? 'ip33haa'}
-                status={about?.status ?? 'Online'}
-                contactText="Contact Me"
-                avatarUrl={about?.avatarUrl ?? '/Media.jpg'}
-                showUserInfo
-                enableTilt={true}
-                enableMobileTilt
-                onContactClick={() => console.log('Contact clicked')}
-                behindGlowEnabled
-                behindGlowColor={about?.behindGlowColor ?? 'rgba(125, 190, 255, 0.67)'}
-                innerGradient={about?.innerGradient ?? 'linear-gradient(145deg,#60496e8c 0%,#71C4FF44 100%)'}
-              />
-            </div>
+          <div className="mt-6 w-full">
+            {(() => {
+              const palette = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4']
+              const items = projects.map((p: any, i: number) => {
+                const rawStack = p.technologiesUsed ?? p.TechnologiesUsed ?? p.stack ?? p.technologies ?? p.tech
+                let stackArr: string[] = []
+                if (Array.isArray(rawStack)) stackArr = rawStack.map((s: any) => String(s).trim())
+                else if (typeof rawStack === 'string') stackArr = rawStack.split(/[,;]\s*/).map(s => s.trim()).filter(Boolean)
 
-            <div className="prose max-w-xl text-white/80">
-              {projects && projects.length > 0 ? (
-                <div>
-                  <h3 className="text-xl font-semibold">Projects</h3>
-                  <div className="mt-4 grid gap-4">
-                    {projects.map((p: any) => (
-                      <article key={p.id || p.title} className="rounded-lg border border-white/8 bg-white/2 p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          {p.imageUrl ? (
-                            <div className="hidden sm:block w-28 h-20 flex-shrink-0 overflow-hidden rounded-md bg-black/10">
-                              <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
-                            </div>
-                          ) : (
-                            <div className="hidden sm:block w-28 h-20 flex-shrink-0 overflow-hidden rounded-md bg-white/5 flex items-center justify-center text-sm text-white/60">No image</div>
-                          )}
+                return {
+                  image: p.imageUrl ?? '/Media.jpg',
+                  title: p.title ?? 'Untitled',
+                  subtitle: (p.description ?? '').slice(0, 140),
+                  stack: stackArr,
+                  handle: p.handle ?? '',
+                  borderColor: palette[i % palette.length],
+                  gradient: `linear-gradient(145deg, ${palette[i % palette.length]}, #000)`,
+                  url: p.projectUrl ?? p.ProjectUrl
+                }
+              })
 
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-white">{p.title}</h4>
-                            <p className="mt-1 text-sm text-white/70">{p.description}</p>
-                            { (p.technologiesUsed ?? p.TechnologiesUsed) && <div className="mt-2 text-xs text-white/60">Stack: {p.technologiesUsed ?? p.TechnologiesUsed}</div>}
-                          </div>
-
-                          { (p.projectUrl ?? p.ProjectUrl) && (
-                            <div className="flex-shrink-0">
-                              <a href={p.projectUrl ?? p.ProjectUrl} target="_blank" rel="noreferrer" className="text-cyan-300 hover:underline">
-                                View
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <h3 className="text-xl font-semibold">About</h3>
-                  <p>
-                    I am a .NET Developer with over two years of experience building web applications and APIs using
-                    ASP.NET Core, C#, and SQL Server. I develop scalable backend systems that support real business
-                    operations and build REST APIs for frontend integration.
-                  </p>
-                  <h4 className="mt-4 font-semibold">Contact</h4>
-                  <p className="text-sm">Mobile: 09272602231 • Email: johnphilip.garcia27@gmail.com</p>
-                  <h4 className="mt-4 font-semibold">Top Skills</h4>
-                  <ul className="list-inside list-disc text-sm">
-                    <li>API Development</li>
-                    <li>ASP.NET Core / C#</li>
-                    <li>SQL Server</li>
-                    <li>React / Vite</li>
-                  </ul>
-                </>
-              )}
-            </div>
+              return (
+                <ChromaGrid items={items} radius={300} damping={0.45} fadeOut={0.6} ease="power3.out" />
+              )
+            })()}
           </div>
         </div>
       </section>
+
+
+
       {showLogin && <Login onClose={() => setShowLogin(false)} />}
       {showRegister && <Register onClose={() => setShowRegister(false)} />}
-    </section>
+
+      <ContactSection />
+    </>
   )
 }
 

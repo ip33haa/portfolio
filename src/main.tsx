@@ -8,6 +8,11 @@ import App from './App.tsx'
 import queryClient from './lib/queryClient'
 import { AuthProvider } from './lib/useAuth'
 
+// Ensure dark theme variables are active by default so sections inherit hero-like background
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.add('dark')
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

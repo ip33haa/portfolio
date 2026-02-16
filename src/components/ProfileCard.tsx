@@ -61,7 +61,7 @@ interface TiltEngine {
 }
 
 const ProfileCardComponent: React.FC<ProfileCardProps> = ({
-  avatarUrl = '/logo-overlay.png',
+  avatarUrl = '/Media.jpg',
   iconUrl = '/logo-overlay.png',
   grainUrl = '/logo-overlay.png',
   innerGradient,
@@ -73,9 +73,9 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
   enableMobileTilt = false,
   mobileTiltSensitivity = 5,
   miniAvatarUrl,
-  name = 'Javi A. Torres',
-  title = 'Software Engineer',
-  handle = 'javicodes',
+  name = 'John Philip Garcia',
+  title = '.NET Developer',
+  handle = 'ip33haa',
   status = 'Online',
   contactText = 'Contact',
   showUserInfo = true,

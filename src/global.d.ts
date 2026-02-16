@@ -1,13 +1,16 @@
 // Module declarations for asset imports that TypeScript doesn't know about by default.
-declare module '*.glb' {
-  const src: string;
-  export default src;
-}
-
+declare module '*.glb';
 declare module '/card.glb' {
   const src: string;
   export default src;
 }
+declare module '*.png';
+
+declare module 'meshline' {
+  export const MeshLineGeometry: any;
+  export const MeshLineMaterial: any;
+}
+
 
 declare module '*.gltf' {
   const src: string;

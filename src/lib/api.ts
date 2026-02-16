@@ -170,8 +170,70 @@ export function getCertifications() {
   return apiFetch('/certifications')
 }
 
+// Admin CRUD helpers for common resources
+export function createSkill(payload: any) {
+  return apiFetch('/skills', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateSkill(id: string | number, payload: any) {
+  return apiFetch(`/skills/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteSkill(id: string | number) {
+  return apiFetch(`/skills/${id}`, { method: 'DELETE' })
+}
+
+export function createExperience(payload: any) {
+  return apiFetch('/experiences', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateExperience(id: string | number, payload: any) {
+  return apiFetch(`/experiences/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteExperience(id: string | number) {
+  return apiFetch(`/experiences/${id}`, { method: 'DELETE' })
+}
+
+export function createCertification(payload: any) {
+  return apiFetch('/certifications', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateCertification(id: string | number, payload: any) {
+  return apiFetch(`/certifications/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteCertification(id: string | number) {
+  return apiFetch(`/certifications/${id}`, { method: 'DELETE' })
+}
+
+export function getTestimonials() {
+  return apiFetch('/testimonials')
+}
+
+export function createTestimonial(payload: any) {
+  return apiFetch('/testimonials', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateTestimonial(id: string | number, payload: any) {
+  return apiFetch(`/testimonials/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteTestimonial(id: string | number) {
+  return apiFetch(`/testimonials/${id}`, { method: 'DELETE' })
+}
+
+export function updateAbout(payload: any) {
+  return apiFetch('/about', { method: 'PUT', body: JSON.stringify(payload) })
+}
+
 export function postContactForm(payload: any) {
   return apiFetch('/contactforms', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+// Request the backend to send the contact message as an email (if supported)
+export function sendContactEmail(payload: any) {
+  return apiFetch('/contactforms/send', { method: 'POST', body: JSON.stringify(payload) })
 }
 
 // Admin helpers
@@ -223,11 +285,38 @@ export async function uploadFile(file: File) {
 export default {
   API_BASE,
   refreshAccessToken,
+  getAuth,
+  login,
+  logout,
+  register,
   getAbout,
+  updateAbout,
   getProjects,
   getProject,
+  createProject,
+  updateProject,
+  deleteProject,
   getSkills,
+  createSkill,
+  updateSkill,
+  deleteSkill,
   getExperiences,
+  createExperience,
+  updateExperience,
+  deleteExperience,
   getCertifications,
-  postContactForm
+  createCertification,
+  updateCertification,
+  deleteCertification,
+  getTestimonials,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  getContactForms,
+  getUnreadContactForms,
+  markContactFormAsRead,
+  deleteContactFormSubmission,
+  postContactForm,
+  sendContactEmail,
+  uploadFile
 }

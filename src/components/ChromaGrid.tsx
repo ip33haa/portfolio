@@ -152,11 +152,13 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
       className={`relative w-full h-full flex flex-wrap justify-center items-start gap-3 ${className}`}
-      style={{
-        '--r': `${radius}px`,
-        '--x': '50%',
-        '--y': '50%'
-      } as React.CSSProperties}
+      style={
+        {
+          '--r': `${radius}px`,
+          '--x': '50%',
+          '--y': '50%'
+        } as React.CSSProperties
+      }
     >
       {data.map((c, i) => (
         <article
@@ -164,11 +166,13 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           onMouseMove={handleCardMove}
           onClick={() => handleCardClick(c.url)}
           className="group relative flex flex-col w-[300px] rounded-[20px] overflow-hidden border-2 border-transparent transition-colors duration-300 cursor-pointer"
-          style={{
-            '--card-border': c.borderColor || 'transparent',
-            background: c.gradient,
-            '--spotlight-color': 'rgba(255,255,255,0.3)'
-          } as React.CSSProperties}
+          style={
+            {
+              '--card-border': c.borderColor || 'transparent',
+              background: c.gradient,
+              '--spotlight-color': 'rgba(255,255,255,0.3)'
+            } as React.CSSProperties
+          }
         >
           <div
             className="absolute inset-0 pointer-events-none transition-opacity duration-500 z-20 opacity-0 group-hover:opacity-100"
