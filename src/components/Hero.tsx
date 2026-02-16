@@ -170,13 +170,14 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
             </a>
           </li>
           <li>
-            <a className="transition hover:text-white" href="#projects">
-              Projects
+            <a className="transition hover:text-white" href="#skills">
+              Skills
             </a>
           </li>
           <li>
-            <a className="transition hover:text-white" href="#skills">
-              Skills
+            
+            <a className="transition hover:text-white" href="#projects">
+              Projects
             </a>
           </li>
           <li>

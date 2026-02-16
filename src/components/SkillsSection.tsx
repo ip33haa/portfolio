@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState } from 'react'
 import LogoLoop from './LogoLoop'
 
 const SkillsSection: React.FC = () => {
@@ -49,6 +49,8 @@ const SkillsSection: React.FC = () => {
           <h2 className="font-display text-2xl font-semibold text-white">Skills</h2>
           <p className="mt-2 text-sm text-white/70">Technologies and tools I work with.</p>
         </div>
+        
+        <ExperienceCards />
 
         <div>
           <LogoLoop
@@ -89,3 +91,88 @@ const SkillsSection: React.FC = () => {
 }
 
 export default SkillsSection
+
+function ExperienceCards() {
+  const [failed, setFailed] = useState<Record<string, boolean>>({})
+
+  const experiences = [
+    {
+      role: 'Lead .NET Developer',
+      company: 'Offshore Business Processing',
+      dates: 'Jan 2005 - Present',
+      logo: '/project-logo/obp-logo 2.png',
+      href: 'https://www.offshorebusinessprocessing.com/'
+    },
+    {
+      role: '.NET Developer',
+      company: 'Offshore Business Processing',
+      dates: 'Dec 2023 - Jan 2025',
+      logo: '/project-logo/obp-logo 2.png',
+      href: 'https://www.offshorebusinessprocessing.com/'
+    },
+    {
+      role: 'Front-end Developer',
+      company: 'Medblast',
+      dates: 'Jul 2023 - Oct 2023',
+      logo: '/project-logo/MedBlast.png',
+      href: 'https://medblast.com'
+    },
+    {
+      role: 'UI/UX Designer',
+      company: 'Medblast',
+      dates: 'Jul 2023 - Oct 2023',
+      logo: '/project-logo/MedBlast.png',
+      href: 'https://medblast.com'
+    },
+    {
+      role: 'Programming Analyst',
+      company: 'Rockwell',
+      dates: 'Apr 2023 - Jul 2023',
+      logo: '/project-logo/rockwell.png',
+      href: '#'
+    },
+    {
+      role: 'Software Engineer',
+      company: 'Norima Consulting Inc.',
+      dates: 'Sept 2021 - Jul 2023',
+      logo: '/project-logo/norima-logo.png',
+      href: '#'
+    }
+  ]
+
+  return (
+    <div className="mt-12">
+      <h3 className="font-display text-xl font-semibold text-white mb-6">Professional Experience</h3>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {experiences.map((exp) => {
+          const key = exp.company + exp.role
+          const showImg = !failed[exp.logo]
+          return (
+            <a key={key} href={exp.href} target="_blank" rel="noreferrer" className="flex items-center gap-4 bg-white/3 backdrop-blur-sm p-4 rounded-lg hover:scale-[1.01] transition-transform">
+              <div className="flex-shrink-0">
+                {showImg ? (
+                  <img
+                    src={exp.logo}
+                    alt={exp.company}
+                    className="h-14 w-14 object-contain rounded-md bg-white/5 p-1"
+                    onError={(_e) => setFailed((s) => ({ ...s, [exp.logo]: true }))}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="h-14 w-14 rounded-md bg-white/8 flex items-center justify-center text-sm font-semibold text-white/90">
+                    {exp.company.split(' ').map((p) => p[0]).slice(0,2).join('')}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="text-white font-medium">{exp.role}</div>
+                <div className="text-sm text-white/70">{exp.company} • {exp.dates}</div>
+              </div>
+            </a>
+          )
+        })}
+      </div>
+    </div>
+  )
+}

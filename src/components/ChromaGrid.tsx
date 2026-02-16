@@ -10,6 +10,7 @@ export interface ChromaItem {
   borderColor?: string;
   gradient?: string;
   url?: string;
+  stack?: string[];
 }
 
 export interface ChromaGridProps {
@@ -151,7 +152,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
       ref={rootRef}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
-      className={`relative w-full h-full flex flex-wrap justify-center items-start gap-3 ${className}`}
+      className={`relative w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}
       style={
         {
           '--r': `${radius}px`,
@@ -165,7 +166,7 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
           key={i}
           onMouseMove={handleCardMove}
           onClick={() => handleCardClick(c.url)}
-          className="group relative flex flex-col w-[300px] rounded-[20px] overflow-hidden border-2 border-transparent transition-colors duration-300 cursor-pointer"
+          className="group relative flex flex-col h-[420px] sm:h-[420px] md:h-[400px] lg:h-[360px] w-full rounded-[12px] overflow-hidden border-2 border-transparent transition-colors duration-300 cursor-pointer"
           style={
             {
               '--card-border': c.borderColor || 'transparent',
@@ -181,14 +182,24 @@ const ChromaGrid: React.FC<ChromaGridProps> = ({
                 'radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%)'
             }}
           />
-          <div className="relative z-10 flex-1 p-[10px] box-border">
-            <img src={c.image} alt={c.title} loading="lazy" className="w-full h-full object-cover rounded-[10px]" />
+          <div className="relative z-10 p-[10px] box-border h-1/3 overflow-hidden">
+            <img src={c.image} alt={c.title} loading="lazy" className="w-full h-full object-cover rounded-t-[8px]" />
           </div>
-          <footer className="relative z-10 p-3 text-white font-sans grid grid-cols-[1fr_auto] gap-x-3 gap-y-1">
-            <h3 className="m-0 text-[1.05rem] font-semibold">{c.title}</h3>
-            {c.handle && <span className="text-[0.95rem] opacity-80 text-right">{c.handle}</span>}
-            <p className="m-0 text-[0.85rem] opacity-85">{c.subtitle}</p>
-            {c.location && <span className="text-[0.85rem] opacity-85 text-right">{c.location}</span>}
+
+          <footer className="relative z-10 p-4 text-white font-sans grid gap-2 h-2/3 overflow-auto">
+            <div className="flex items-start justify-between gap-3">
+              <h3 className="m-0 text-lg font-semibold">{c.title}</h3>
+              {c.handle && <span className="text-sm opacity-80">{c.handle}</span>}
+            </div>
+            <p className="m-0 text-sm opacity-85">{c.subtitle}</p>
+            {c.location && <div className="text-sm opacity-80">{c.location}</div>}
+            {c.stack && c.stack.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {c.stack.map((s, idx) => (
+                  <span key={idx} className="text-[0.72rem] leading-none text-white/70 bg-white/5 rounded px-2 py-1">{s}</span>
+                ))}
+              </div>
+            )}
           </footer>
         </article>
       ))}
