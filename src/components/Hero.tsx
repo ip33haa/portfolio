@@ -211,7 +211,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
 
         {/* Mobile menu overlay */}
         {open && (
-          <div className="mobile-menu fixed inset-0 z-50 flex items-start justify-center px-6 py-20">
+          <div className="mobile-menu fixed z-11 inset-0 flex items-start justify-center px-6 py-20">
             <div className="mobile-menu-panel w-full max-w-md rounded-xl bg-[rgba(10,16,51,0.92)] p-6 shadow-2xl">
               <div className="flex items-center justify-between">
                 <img src="/logo-1.gif" alt="logo" className="h-9 w-auto logo-img" />
