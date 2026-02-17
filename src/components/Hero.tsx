@@ -58,7 +58,7 @@ export function Hero() {
           <Nav onSignIn={scrollToContact} />
         </header>
 
-        <div className="relative z-10 mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
+        <div className="relative z-9 mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
           <div className="grid w-full gap-12 lg:grid-cols-2 lg:items-center">
 
             {/* Left: textual placeholders (role, name, copy, CTAs) */}
