@@ -223,8 +223,16 @@ export function deleteTestimonial(id: string | number) {
   return apiFetch(`/testimonials/${id}`, { method: 'DELETE' })
 }
 
-export function updateAbout(payload: any) {
-  return apiFetch('/about', { method: 'PUT', body: JSON.stringify(payload) })
+export function createAbout(payload: any) {
+  return apiFetch('/about', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateAbout(id: string | number, payload: any) {
+  return apiFetch(`/about/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteAbout(id: string | number) {
+  return apiFetch(`/about/${id}`, { method: 'DELETE' })
 }
 
 export function postContactForm(payload: any) {
@@ -290,7 +298,9 @@ export default {
   logout,
   register,
   getAbout,
+  createAbout,
   updateAbout,
+  deleteAbout,
   getProjects,
   getProject,
   createProject,

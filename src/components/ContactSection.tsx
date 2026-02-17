@@ -53,44 +53,44 @@ const ContactSection: React.FC = () => {
   return (
     <section id="contact" className="mt-0 bg-transparent min-h-screen snap-start flex items-center relative">
       {/* GridScan removed */}
-      <div className="mx-auto relative z-10 w-full max-w-6xl px-6 py-16">
+      <div className="mx-auto relative z-10 w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-16">
         <ElectricBorder color="#7df9ff" speed={1} chaos={0.12} borderRadius={16} style={{ borderRadius: 16 }}>
-          <div className="bg-white/3 backdrop-blur-md rounded-[16px] p-8">
-            <h2 className="font-display text-2xl font-semibold text-white mb-4">Contact Me</h2>
-            <p className="text-white/70 mb-6">Have a project, question, or want to collaborate? Send a message and I will get back to you.</p>
+          <div className="bg-white/3 backdrop-blur-md rounded-[16px] p-4 sm:p-6 md:p-8">
+            <h2 className="font-display text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4">Contact Me</h2>
+            <p className="text-white/70 text-sm sm:text-base mb-4 sm:mb-6">Have a project, question, or want to collaborate? Send a message and I will get back to you.</p>
 
-            <div className="grid gap-8 lg:grid-cols-2 items-start">
+            <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-start">
               <div>
                 <form onSubmit={handleSubmit} className="grid gap-3">
               <div>
-                <label className="block text-sm text-white/80">Name</label>
-                <input value={name} onChange={e => setName(e.target.value)} className="w-full mt-2 p-3 rounded bg-white/3 text-white" required />
+                <label className="block text-xs sm:text-sm text-white/80">Name</label>
+                <input value={name} onChange={e => setName(e.target.value)} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base" required />
               </div>
 
               <div>
-                <label className="block text-sm text-white/80">Position</label>
-                <input value={position} onChange={e => setPosition(e.target.value)} className="w-full mt-2 p-3 rounded bg-white/3 text-white" placeholder="Your role or company title" />
+                <label className="block text-xs sm:text-sm text-white/80">Position Offered</label>
+                <input value={position} onChange={e => setPosition(e.target.value)} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base" placeholder="What position are you offering?" />
               </div>
 
               <div>
-                <label className="block text-sm text-white/80">Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full mt-2 p-3 rounded bg-white/3 text-white" required />
+                <label className="block text-xs sm:text-sm text-white/80">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base" required />
               </div>
 
               <div>
-                <label className="block text-sm text-white/80">Message</label>
-                <textarea value={message} onChange={e => setMessage(e.target.value)} rows={6} className="w-full mt-2 p-3 rounded bg-white/3 text-white" required />
+                <label className="block text-xs sm:text-sm text-white/80">Message</label>
+                <textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base sm:rows-6" required />
               </div>
 
-              <div className="flex items-center justify-end gap-3">
-                {status && <div className="text-sm text-white/80 mr-auto">{status}</div>}
-                <button type="submit" disabled={submitting} className="hero-primary-btn">{submitting ? 'Sending…' : 'Send Message'}</button>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-2 sm:gap-3">
+                {status && <div className="text-xs sm:text-sm text-white/80 sm:mr-auto">{status}</div>}
+                <button type="submit" disabled={submitting} className="hero-primary-btn w-full sm:w-auto text-sm sm:text-base">{submitting ? 'Sending…' : 'Send Message'}</button>
               </div>
             </form>
               </div>
 
-              <div className="flex justify-center lg:justify-end">
-                <div className="w-full max-w-sm">
+              <div className="flex justify-center lg:justify-end mt-6 lg:mt-0">
+                <div className="w-full max-w-[280px] sm:max-w-sm">
                   <ProfileCard
                     name="John Philip Garcia"
                     title=".NET Developer"

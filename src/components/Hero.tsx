@@ -4,6 +4,7 @@ import TextType from './TextType'
 import ChromaGrid from './ChromaGrid'
 import DotGrid from './DotGrid'
 import SkillsSection from './SkillsSection'
+import AboutSection from './AboutSection'
 import ContactSection from './ContactSection'
 import * as api from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
@@ -144,6 +145,7 @@ export function Hero() {
       {showLogin && <Login onClose={() => setShowLogin(false)} />}
       {showRegister && <Register onClose={() => setShowRegister(false)} />}
 
+      <AboutSection />
       <ContactSection />
     </>
   )
@@ -196,7 +198,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
 
         {/* Hamburger for small screens */}
         <button
-          className="md:hidden ml-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/3 text-white/80"
+          className="md:hidden ml-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/3 text-white/80 relative z-[100]"
           aria-label="Menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}>

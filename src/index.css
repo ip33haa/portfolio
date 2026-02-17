@@ -46,6 +46,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -394,4 +398,25 @@
   align-items: center;
   transform: scale(1);
   transform-origin: center;
+}
+
+/* Swagger-like styles for About section */
+.swagger-container {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.swagger-response {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.swagger-field {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.swagger-field:last-child {
+  border-bottom: none;
 }
