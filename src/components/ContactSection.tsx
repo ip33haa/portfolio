@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import * as api from '../lib/api'
-import ElectricBorder from './ElectricBorder'
 import ProfileCard from './ProfileCard'
 // no longer need useQuery here
 
@@ -54,8 +53,7 @@ const ContactSection: React.FC = () => {
     <section id="contact" className="mt-0 bg-transparent min-h-screen snap-start flex items-center relative">
       {/* GridScan removed */}
       <div className="mx-auto relative z-10 w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-16">
-        <ElectricBorder color="#7df9ff" speed={1} chaos={0.12} borderRadius={16} style={{ borderRadius: 16 }}>
-          <div className="bg-white/3 backdrop-blur-md rounded-[16px] p-4 sm:p-6 md:p-8">
+        <div className="bg-white/3 backdrop-blur-md rounded-[16px] p-4 sm:p-6 md:p-8">
             <h2 className="font-display text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4">Contact Me</h2>
             <p className="text-white/70 text-sm sm:text-base mb-4 sm:mb-6">Have a project, question, or want to collaborate? Send a message and I will get back to you.</p>
 
@@ -111,7 +109,6 @@ const ContactSection: React.FC = () => {
               </div>
             </div>
           </div>
-        </ElectricBorder>
       </div>
     </section>
   )

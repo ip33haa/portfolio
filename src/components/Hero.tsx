@@ -160,7 +160,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
     <div className="mx-auto site-nav grid w-full max-w-6xl grid-cols-[auto_1fr_auto] items-center px-4 py-4">
       <div className="flex items-center gap-3">
         <a href="#home" aria-label="Home">
-          <img src="/logo-1.gif" alt="John Philip Garcia" className="h-10 w-auto logo-img" />
+          <img src="/logo-1.gif" alt="John Philip Garcia" className="h-10 w-auto logo-img" loading="eager" />
         </a>
       </div>
 
@@ -214,7 +214,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
           <div className="mobile-menu fixed z-11 inset-0 flex items-start justify-center px-6 py-20">
             <div className="mobile-menu-panel w-full max-w-md rounded-xl bg-[rgba(10,16,51,0.92)] p-6 shadow-2xl">
               <div className="flex items-center justify-between">
-                <img src="/logo-1.gif" alt="logo" className="h-9 w-auto logo-img" />
+                <img src="/logo-1.gif" alt="logo" className="h-9 w-auto logo-img" loading="eager" />
                 <button
                   className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/3 text-white/80"
                   onClick={() => setOpen(false)}

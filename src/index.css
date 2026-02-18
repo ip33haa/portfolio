@@ -46,9 +46,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* Removed smooth scroll to avoid scroll animation performance issues */
 
 :root {
   --radius: 0.625rem;
