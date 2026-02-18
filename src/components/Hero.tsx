@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
 import Spline from '@splinetool/react-spline'
 import TextType from './TextType'
 import ChromaGrid from './ChromaGrid'
@@ -14,6 +15,11 @@ import Register from './Register'
 export function Hero() {
   const [showLogin, setShowLogin] = useState(false)
   const [showRegister, setShowRegister] = useState(false)
+  const splineAppRef = useRef<any>(null)
+  const audioRef = useRef<Record<string, HTMLAudioElement | undefined>>({})
+  const switchesRef = useRef<HTMLDivElement | null>(null)
+  const [soundSet, setSoundSet] = useState<string>('turquoise')
+  // soundSets and colors are implicit in the switches images list
 
   const { data: projectsRaw } = useQuery({ queryKey: ['projects'], queryFn: () => api.getProjects(), staleTime: 1000 * 60 * 2, retry: 1 })
 
@@ -23,10 +29,117 @@ export function Hero() {
   }
   const projects = (projectsRaw?.data ?? projectsRaw) || []
 
+  useEffect(() => {
+    // choose a sound set (turquoise folder exists in public)
+    const base = `/keyboard-sounds/${soundSet}`
+    const pressMap: Record<string,string> = {
+      ENTER: `${base}/press/ENTER.mp3`,
+      BACKSPACE: `${base}/press/BACKSPACE.mp3`,
+      SPACE: `${base}/press/SPACE.mp3`
+    }
+    // prepare multiple GENERIC variants for realism (GENERIC_R0..R4)
+    const genericVariants = [0,1,2,3,4].map(i => `${base}/press/GENERIC_R${i}.mp3`)
+
+    const releaseMap: Record<string,string> = {
+      GENERIC: `${base}/release/GENERIC.mp3`,
+      ENTER: `${base}/release/ENTER.mp3`,
+      BACKSPACE: `${base}/release/BACKSPACE.mp3`,
+      SPACE: `${base}/release/SPACE.mp3`
+    }
+
+    const audioStore: Record<string, HTMLAudioElement> = {}
+    // preload press variants + other sounds
+    Object.values({...pressMap, ...releaseMap}).forEach((src) => {
+      try {
+        const a = new Audio(src)
+        a.preload = 'auto'
+        audioStore[src] = a
+      } catch (e) {}
+    })
+    // preload GENERIC variants
+    genericVariants.forEach((src) => {
+      try {
+        const a = new Audio(src)
+        a.preload = 'auto'
+        audioStore[src] = a
+      } catch (e) {}
+    })
+    audioRef.current = audioStore
+
+    const play = (kind: 'press' | 'release', keyName: string) => {
+      const mapKey = ['ENTER','BACKSPACE','SPACE'].includes(keyName) ? keyName : 'GENERIC'
+      if (kind === 'press' && mapKey === 'GENERIC') {
+        // pick a random GENERIC variant for realism
+        const candidate = genericVariants[Math.floor(Math.random() * genericVariants.length)]
+        const a = audioRef.current[candidate]
+        if (a) {
+          try { a.currentTime = 0 } catch (e) {}
+          a.play().catch(() => {})
+          return
+        }
+      }
+
+      const src = (kind === 'press' ? pressMap : releaseMap)[mapKey] ?? (kind === 'press' ? genericVariants[0] : releaseMap.GENERIC)
+      const a = audioRef.current[src]
+      if (a) {
+        try { a.currentTime = 0 } catch (e) {}
+        a.play().catch(() => {})
+      }
+    }
+
+    const tryAnimate = (keyRaw: string) => {
+      const app = splineAppRef.current || (window as any).__splineApp
+      if (!app) return
+      const key = keyRaw === ' ' ? 'SPACE' : keyRaw.toUpperCase()
+      const tryNames = [key, `KEY_${key}`, `Key ${key}`, key.replace(' ', '')]
+      try {
+        if (typeof app.emitEvent === 'function') {
+          for (const name of tryNames) {
+            try { app.emitEvent(name, 'onPointerDown'); break } catch (e) {}
+          }
+          return
+        }
+
+        const findObj = (n: string) => app.findOne?.(n) || app.scene?.getObjectByName?.(n) || app.scene?.find?.((o: any) => o.name === n)
+        for (const name of tryNames) {
+          const obj = findObj(name)
+          if (obj) {
+            const target = obj.scale ?? obj.position
+            gsap.fromTo(target, { y: (target.y ?? 0) }, { y: (target.y ?? 0) - 0.06, duration: 0.08, yoyo: true, repeat: 1 })
+            break
+          }
+        }
+      } catch (e) {}
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      const k = e.key === ' ' ? 'SPACE' : (e.key === 'Enter' ? 'ENTER' : (e.key === 'Backspace' ? 'BACKSPACE' : 'GENERIC'))
+      play('press', k)
+      tryAnimate(k === 'GENERIC' ? e.key : k)
+    }
+    const onKeyUp = (e: KeyboardEvent) => {
+      const k = e.key === ' ' ? 'SPACE' : (e.key === 'Enter' ? 'ENTER' : (e.key === 'Backspace' ? 'BACKSPACE' : 'GENERIC'))
+      play('release', k)
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
+    return () => {
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
+    }
+  }, [soundSet])
+
+  const scrollSwitches = (delta = 200) => {
+    const el = switchesRef.current
+    if (!el) return
+    el.scrollBy({ left: delta, behavior: 'smooth' })
+  }
+
   return (
     <>
-      <section className="hero-shell min-h-screen snap-start">
-      <div className="hero-stage relative overflow-hidden min-h-screen">
+      <section className="hero-shell h-screen snap-start">
+      <div className="hero-stage relative overflow-hidden h-screen">
         {/* DotGrid - overlay scoped to the hero stage */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <DotGrid
@@ -42,23 +155,77 @@ export function Hero() {
           />
         </div>
 
-        <div className="absolute inset-0 z-[1] pointer-events-none">
+            <div className="absolute inset-0 z-[1] pointer-events-none">
           <Spline
             scene="https://prod.spline.design/UxCl2VYZxAvj0Pol/scene.splinecode"
             className="h-full w-full"
             style={{ background: 'transparent' }}
+            onLoad={(splineApp: any) => {
+              // store spline instance for animations and in ref
+              ;(window as any).__splineApp = splineApp
+              splineAppRef.current = splineApp
+            }}
           />
         </div>
 
-        <div className="hero-veil" aria-hidden="true" />
-        <div className="hero-vignette" aria-hidden="true" />
+        {/* removed hero-veil and hero-vignette per request */}
         <div className="hero-grain" aria-hidden="true" />
+
+        {/* Bottom-aligned switches selector with scroll buttons (large screens) */}
+        <div className="absolute left-0 right-0 bottom-6 z-30 flex justify-center px-6">
+          <div className="flex items-center gap-3">
+            <button
+              aria-label="Scroll left"
+              onClick={() => scrollSwitches(-220)}
+              className="h-10 w-10 rounded-full bg-white/5 text-white/80 flex items-center justify-center hover:bg-white/10 transition"
+            >
+              ‹
+            </button>
+
+            <div ref={switchesRef} className="flex gap-3 overflow-x-auto items-center no-scrollbar max-w-[520px] px-1">
+              {[
+                'alpaca.webp',
+                'black-ink.webp',
+                'blue-alps.webp',
+                'cream.webp',
+                'holy_panda.webp',
+                'mx-black.webp',
+                'mx-blue.webp',
+                'mx-brown.png',
+                'red-ink.webp',
+                'turquoise.webp'
+              ].map((name) => {
+                const key = name.split('.')[0].replace(/[-_]/g, '')
+                const isSelected = soundSet === key
+                return (
+                  <button
+                    key={name}
+                    onClick={() => setSoundSet(key)}
+                    className={`flex-shrink-0 overflow-hidden rounded-lg p-2 transition-transform duration-150 ${isSelected ? 'ring-4 ring-white/40 scale-105' : 'ring-1 ring-white/10'}`}
+                    style={{ background: 'rgba(255,255,255,0.02)' }}
+                    title={key}
+                  >
+                    <img src={`/switches/${name}`} alt={name.replace(/[-_\.]/g, ' ')} className="h-20 w-auto object-contain" loading="lazy" />
+                  </button>
+                )
+              })}
+            </div>
+
+            <button
+              aria-label="Scroll right"
+              onClick={() => scrollSwitches(220)}
+              className="h-10 w-10 rounded-full bg-white/5 text-white/80 flex items-center justify-center hover:bg-white/10 transition"
+            >
+              ›
+            </button>
+          </div>
+        </div>
 
         <header className="relative z-10">
           <Nav onSignIn={scrollToContact} />
         </header>
 
-        <div className="relative z-9 mx-auto flex min-h-[86vh] w-full max-w-6xl items-center px-6 pb-16 pt-8 lg:pt-12">
+        <div className="relative z-9 mx-auto flex h-full w-full max-w-6xl items-center px-6 py-12 lg:py-16">
           <div className="grid w-full gap-12 lg:grid-cols-2 lg:items-center">
 
             {/* Left: textual placeholders (role, name, copy, CTAs) */}
@@ -86,16 +253,18 @@ export function Hero() {
                 <button onClick={() => { window.location.hash = '#projects' }} className="hero-primary-btn">View Projects</button>
                 <button onClick={scrollToContact} className="hero-secondary-btn">Contact Me</button>
               </div>
-              <div className="text-xs uppercase tracking-[0.3em] text-white/40">
-                Available for select collaborations
-              </div>
-            </div>
+                <div className="text-xs uppercase tracking-[0.3em] text-white/40">
+                  Available for select collaborations
+                </div>
 
-            <div className="hidden lg:block" />
+                {/* sound-set buttons removed here; images on right act as selectors */}
+              </div>
+
+            {/* switches row moved to bottom-aligned overlay for better placement on hero */}
+            </div>
           </div>
         </div>
-      </div>
-      </section>
+        </section>
 
       {/* Skills section placed directly below the hero stage */}
       <section id="skills" className="relative z-10 min-h-screen snap-start flex items-center">
