@@ -232,16 +232,19 @@ export function Hero() {
                 .NET Developer
               </div>
               <h1 className="hero-title font-display text-4xl font-semibold leading-tight text-white sm:text-5xl lg:text-6xl">
-                <TextType
-                  as="span"
-                  text={["Let's build something amazing", "for your websites", "Let's Connect!"]}
-                  typingSpeed={75}
-                  pauseDuration={1500}
-                  showCursor
-                  cursorCharacter="_"
-                  deletingSpeed={50}
-                  cursorBlinkDuration={0.5}
-                />
+                John Philip Garcia
+                <div className="mt-3 text-lg font-normal text-white/80 sm:text-xl">
+                  <TextType
+                    as="span"
+                    text={["Let's build something amazing", "for your websites", "Let's Connect!"]}
+                    typingSpeed={75}
+                    pauseDuration={1500}
+                    showCursor
+                    cursorCharacter="_"
+                    deletingSpeed={50}
+                    cursorBlinkDuration={0.5}
+                  />
+                </div>
               </h1>
               <p className="hero-subtitle max-w-xl text-base text-white/70 sm:text-lg">
                 Use headphones for realistic key sounds. Start typing on the interactive 3D keyboard for the full experience.

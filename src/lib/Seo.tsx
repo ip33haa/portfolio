@@ -26,7 +26,10 @@ export default function Seo({ title, description, image, pathname }: SeoProps) {
         'name': 'John Philip Garcia',
         'url': siteUrl || '',
         'jobTitle': '.NET Developer',
-        'sameAs': []
+        'sameAs': [
+          'https://github.com/ip33haa',
+          'https://www.linkedin.com/in/john-philip-g-01704b210'
+        ]
       },
       {
         '@type': 'WebSite',
