@@ -398,6 +398,60 @@
   transform-origin: center;
 }
 
+/* react-simple-wysiwyg theme overrides to match site */
+.rsw-editor {
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+.rsw-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: rgba(10,16,30,0.55);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+.rsw-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.03);
+  color: #dbeafe;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.rsw-btn:hover { background: rgba(255,255,255,0.02); color: #ffffff }
+.rsw-btn[data-active="true"] { background: linear-gradient(90deg,#06b6d4,#60a5fa); color:#021026; border-color: rgba(34,211,238,0.14) }
+.rsw-btn svg { display: block; width: 16px; height: 16px; color: inherit }
+.rsw-btn strong { font-weight: 700; font-size: 0.95rem }
+.rsw-btn em { font-style: italic; font-size: 0.95rem }
+.rsw-btn span[style] { font-size: 0.95rem }
+.rsw-ce {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: 12px;
+  color: #e6eef8;
+  font-size: 0.95rem;
+}
+.rsw-ce:focus{ outline: none; }
+.rsw-dd { background: rgba(255,255,255,0.02); color: #e6eef8; border: 1px solid rgba(255,255,255,0.03); padding:6px; border-radius:6px }
+.rsw-html { background: transparent; color: #a8cbe0 }
+
+/* small responsive tweak for editor */
+@media (max-width: 640px) {
+  .rsw-toolbar { gap: 4px; padding: 6px }
+  .rsw-btn { width: 32px; height: 32px }
+}
+
 /* Swagger-like styles for About section */
 .swagger-container {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;

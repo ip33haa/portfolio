@@ -7,6 +7,7 @@ import ExperiencesList from '../components/admin/ExperiencesList'
 import CertificationsList from '../components/admin/CertificationsList'
 import TestimonialsList from '../components/admin/TestimonialsList'
 import AboutEditor from '../components/admin/AboutEditor'
+import UsersList from '../components/admin/UsersList'
 import { useState } from 'react'
 import '../styles/admin.css'
 
@@ -128,7 +129,9 @@ const Admin: React.FC = () => {
             </div>
           )}
           {tab === 'users' && (
-            <div className="admin-placeholder">User management coming soon.</div>
+            <div className="admin-card-grid">
+              <UsersList />
+            </div>
           )}
         </section>
       </main>

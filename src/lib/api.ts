@@ -261,6 +261,22 @@ export function getContactForms() {
   return apiFetch('/contactforms')
 }
 
+export function getUsers() {
+  return apiFetch('/users')
+}
+
+export function createUser(payload: any) {
+  return apiFetch('/users', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export function updateUser(id: string | number, payload: any) {
+  return apiFetch(`/users/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export function deleteUser(id: string | number) {
+  return apiFetch(`/users/${id}`, { method: 'DELETE' })
+}
+
 export function getUnreadContactForms() {
   return apiFetch('/contactforms/unread')
 }

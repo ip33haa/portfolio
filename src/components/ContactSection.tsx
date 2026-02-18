@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import WysiwygEditor from './WysiwygEditor'
 import * as api from '../lib/api'
 import ProfileCard from './ProfileCard'
 // no longer need useQuery here
@@ -17,10 +18,13 @@ const ContactSection: React.FC = () => {
     setStatus(null)
     try {
       // Map frontend fields to backend-expected names to satisfy validation
+      const stripTags = (html: string) => html.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+      const plain = stripTags(message || '')
+
       const payload = {
         FullName: name,
         Email: email,
-        Subject: position || (message ? message.slice(0, 80) : 'Contact Form Submission'),
+        Subject: position || (plain ? plain.slice(0, 80) : 'Contact Form Submission'),
         Message: message,
         Position: position
       }
@@ -55,7 +59,7 @@ const ContactSection: React.FC = () => {
       <div className="mx-auto relative z-10 w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-16">
         <div className="bg-white/3 backdrop-blur-md rounded-[16px] p-4 sm:p-6 md:p-8">
             <h2 className="font-display text-xl sm:text-2xl font-semibold text-white mb-3 sm:mb-4">Contact Me</h2>
-            <p className="text-white/70 text-sm sm:text-base mb-4 sm:mb-6">Have a project, question, or want to collaborate? Send a message and I will get back to you.</p>
+            <p className="text-white/70 text-sm sm:text-base mb-4 sm:mb-6">Have a project, job opportunity, or service request? Send a message and I will get back to you.</p>
 
             <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 items-start">
               <div>
@@ -66,8 +70,8 @@ const ContactSection: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs sm:text-sm text-white/80">Position Offered</label>
-                <input value={position} onChange={e => setPosition(e.target.value)} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base" placeholder="What position are you offering?" />
+                <label className="block text-xs sm:text-sm text-white/80">Purpose of Inquiry</label>
+                <input value={position} onChange={e => setPosition(e.target.value)} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base" placeholder="Job offer, project request, or service inquiry" />
               </div>
 
               <div>
@@ -77,7 +81,12 @@ const ContactSection: React.FC = () => {
 
               <div>
                 <label className="block text-xs sm:text-sm text-white/80">Message</label>
-                <textarea value={message} onChange={e => setMessage(e.target.value)} rows={4} className="w-full mt-1 sm:mt-2 p-2 sm:p-3 rounded bg-white/3 text-white text-sm sm:text-base sm:rows-6" required />
+                <div className="mt-1 sm:mt-2">
+                  <WysiwygEditor value={message} onChange={(e: any) => setMessage(e.target.value)} placeholder="Describe your project, role, or service you need." />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm text-white/80">After you submit this form, an automated email response will be sent to you with my CV included.</label>
               </div>
 
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-2 sm:gap-3">

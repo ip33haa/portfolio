@@ -43,7 +43,7 @@ const SkillsSection: React.FC = () => {
   }))
 
   return (
-    <section id="skills" className="relative z-10 bg-transparent">
+    <section id="skills" className="relative z-10 bg-transparent min-h-screen snap-start flex items-center">
       <div className="mx-auto w-full max-w-6xl px-6 py-12">
         <div className="mb-6 text-center">
           <h2 className="font-display text-2xl font-semibold text-white">Skills</h2>

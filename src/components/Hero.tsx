@@ -23,10 +23,7 @@ export function Hero() {
 
   const { data: projectsRaw } = useQuery({ queryKey: ['projects'], queryFn: () => api.getProjects(), staleTime: 1000 * 60 * 2, retry: 1 })
 
-  const scrollToContact = () => {
-    const el = document.getElementById('contact')
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
+  // Use anchor/hash navigation for sections to allow browser-native behavior
   const projects = (projectsRaw?.data ?? projectsRaw) || []
 
   useEffect(() => {
@@ -138,7 +135,7 @@ export function Hero() {
 
   return (
     <>
-      <section className="hero-shell h-screen snap-start">
+      <section id="home" className="hero-shell h-screen snap-start">
       <div className="hero-stage relative overflow-hidden h-screen">
         {/* DotGrid - overlay scoped to the hero stage */}
         <div className="absolute inset-0 z-0 pointer-events-none">
@@ -222,7 +219,7 @@ export function Hero() {
         </div>
 
         <header className="relative z-10">
-          <Nav onSignIn={scrollToContact} />
+          <Nav />
         </header>
 
         <div className="relative z-9 mx-auto flex h-full w-full max-w-6xl items-center px-6 py-12 lg:py-16">
@@ -251,7 +248,7 @@ export function Hero() {
               </p>
               <div className="flex flex-wrap gap-4">
                 <button onClick={() => { window.location.hash = '#projects' }} className="hero-primary-btn">View Projects</button>
-                <button onClick={scrollToContact} className="hero-secondary-btn">Contact Me</button>
+                <a href="#contact" className="hero-secondary-btn inline-flex items-center justify-center">Contact Me</a>
               </div>
                 <div className="text-xs uppercase tracking-[0.3em] text-white/40">
                   Available for select collaborations
@@ -266,12 +263,8 @@ export function Hero() {
         </div>
         </section>
 
-      {/* Skills section placed directly below the hero stage */}
-      <section id="skills" className="relative z-10 min-h-screen snap-start flex items-center">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20 w-full">
-          <SkillsSection />
-        </div>
-      </section>
+      {/* Skills section (rendered by component to avoid duplicate IDs) */}
+      <SkillsSection />
 
       <section id="projects" className="relative z-10 bg-transparent min-h-screen snap-start flex items-center">
         <div className="mx-auto w-full max-w-6xl px-6 py-20 w-full">
@@ -322,7 +315,7 @@ export function Hero() {
 
 export default Hero
 
-function Nav({ onSignIn }: { onSignIn?: () => void }) {
+function Nav() {
   const [open, setOpen] = useState(false)
 
   return (
@@ -362,7 +355,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
       <div className="flex items-center justify-end">
         {/* Contact CTA visible on md+ */}
         <div className="hidden md:flex items-center gap-3">
-          <button onClick={() => onSignIn?.()} className="hero-primary-btn hero-nav-cta">Contact Me</button>
+          <a href="#contact" className="hero-primary-btn hero-nav-cta">Contact Me</a>
         </div>
 
         {/* Hamburger for small screens */}
@@ -383,7 +376,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
           <div className="mobile-menu fixed z-11 inset-0 flex items-start justify-center px-6 py-20">
             <div className="mobile-menu-panel w-full max-w-md rounded-xl bg-[rgba(10,16,51,0.92)] p-6 shadow-2xl">
               <div className="flex items-center justify-between">
-                <img src="/logo-1.gif" alt="logo" className="h-9 w-auto logo-img" loading="eager" />
+                <img src="/logo-1.gif" alt="John Philip Garcia logo" className="h-9 w-auto logo-img" loading="eager" />
                 <button
                   className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/3 text-white/80"
                   onClick={() => setOpen(false)}
@@ -416,7 +409,7 @@ function Nav({ onSignIn }: { onSignIn?: () => void }) {
                 </ul>
                 <div className="mt-6">
                   <div>
-                    <button onClick={() => { setOpen(false); onSignIn?.() }} className="hero-primary-btn w-full">Contact Me</button>
+                    <a href="#contact" onClick={() => setOpen(false)} className="hero-primary-btn w-full">Contact Me</a>
                   </div>
                 </div>
               </nav>
