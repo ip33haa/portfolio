@@ -38,6 +38,26 @@ const ContactSection: React.FC = () => {
         console.warn('sendContactEmail failed or not supported', e)
       }
 
+      // Emit analytics event for contact form submission (gtag + dataLayer)
+      try {
+        if (typeof window !== 'undefined') {
+          // gtag event (Google Analytics / GA4)
+          if ((window as any).gtag) {
+            (window as any).gtag('event', 'contact_form_submit', {
+              method: 'website',
+              event_category: 'engagement',
+              event_label: 'Contact Form'
+            })
+          }
+
+          // dataLayer push (for Google Tag Manager listeners)
+          ;(window as any).dataLayer = (window as any).dataLayer || []
+          ;(window as any).dataLayer.push({ event: 'contact_form_submit', method: 'website' })
+        }
+      } catch (e) {
+        console.warn('Analytics event failed', e)
+      }
+
       setStatus('Thanks — your message was sent.')
       setName('')
       setEmail('')
