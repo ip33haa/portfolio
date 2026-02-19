@@ -250,7 +250,11 @@ export function Hero() {
                 Use headphones for realistic key sounds. Start typing on the interactive 3D keyboard for the full experience.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button onClick={() => { window.location.hash = '#projects' }} className="hero-primary-btn">View Projects</button>
+                <button onClick={() => {
+                  const el = document.getElementById('projects')
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  else { window.location.hash = '#projects' }
+                }} className="hero-primary-btn">View Projects</button>
                 <a href="#contact" className="hero-secondary-btn inline-flex items-center justify-center">Contact Me</a>
               </div>
                 <div className="text-xs uppercase tracking-[0.3em] text-white/40">
