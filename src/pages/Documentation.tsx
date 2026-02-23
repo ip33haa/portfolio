@@ -1,4 +1,4 @@
-import React from 'react'
+// React import not required with JSX transform
 import DocumentationSection from '../components/DocumentationSection'
 
 export default function DocumentationPage() {

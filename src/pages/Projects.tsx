@@ -1,4 +1,4 @@
-import React from 'react'
+// React import not required with JSX transform
 import * as api from '../lib/api'
 import { useQuery } from '@tanstack/react-query'
 import ChromaGrid from '../components/ChromaGrid'
