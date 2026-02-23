@@ -2,13 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import Spline from '@splinetool/react-spline'
 import TextType from './TextType'
-import ChromaGrid from './ChromaGrid'
-import DotGrid from './DotGrid'
+// ChromaGrid (projects) moved to its own page
+import FloatingLines from './FloatingLines'
 import SkillsSection from './SkillsSection'
 import AboutSection from './AboutSection'
+// SiteNav is rendered globally in App.tsx; don't import here
 import ContactSection from './ContactSection'
-import * as api from '../lib/api'
-import { useQuery } from '@tanstack/react-query'
+// Projects and documentation moved to dedicated pages
 import Login from './Login'
 import Register from './Register'
 
@@ -21,10 +21,7 @@ export function Hero() {
   const [soundSet, setSoundSet] = useState<string>('turquoise')
   // soundSets and colors are implicit in the switches images list
 
-  const { data: projectsRaw } = useQuery({ queryKey: ['projects'], queryFn: () => api.getProjects(), staleTime: 1000 * 60 * 2, retry: 1 })
-
-  // Use anchor/hash navigation for sections to allow browser-native behavior
-  const projects = (projectsRaw?.data ?? projectsRaw) || []
+  // Projects and documentation are rendered on their own pages (#/projects, #/documentation)
 
   useEffect(() => {
     // choose a sound set (turquoise folder exists in public)
@@ -133,23 +130,38 @@ export function Hero() {
     el.scrollBy({ left: delta, behavior: 'smooth' })
   }
 
+  useEffect(() => {
+    // ensure the currently selected switch is visible and highlighted
+    const el = switchesRef.current?.querySelector(`[data-soundset="${soundSet}"]`) as HTMLElement | null
+    if (el) {
+      try {
+        el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+      } catch (e) {}
+      // move focus for keyboard users when selection changes programmatically
+      // but avoid stealing focus if the user is currently interacting elsewhere
+      if (document.activeElement === document.body) {
+        el.focus({ preventScroll: true })
+      }
+    }
+  }, [soundSet])
+
   return (
     <>
       <section id="home" className="hero-shell h-screen snap-start">
       <div className="hero-stage relative overflow-hidden h-screen">
         {/* DotGrid - overlay scoped to the hero stage */}
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <DotGrid
-            dotSize={5}
-            gap={15}
-            baseColor="#271E37"
-            activeColor="#5227FF"
-            proximity={120}
-            shockRadius={250}
-            shockStrength={5}
-            resistance={750}
-            returnDuration={1.5}
-          />
+          <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+            <FloatingLines
+              enabledWaves={["top","middle","bottom"]}
+              lineCount={5}
+              lineDistance={5}
+              bendRadius={5}
+              bendStrength={-0.5}
+              interactive={true}
+              parallax={true}
+            />
+          </div>
         </div>
 
             <div className="absolute inset-0 z-[1] pointer-events-none">
@@ -179,7 +191,12 @@ export function Hero() {
               ‹
             </button>
 
-            <div ref={switchesRef} className="flex gap-3 overflow-x-auto items-center no-scrollbar max-w-[520px] px-1">
+            <div
+              ref={switchesRef}
+              className="flex gap-3 overflow-x-auto items-center no-scrollbar max-w-[520px] px-1"
+              role="listbox"
+              aria-label="Keyboard sound sets"
+            >
               {[
                 'alpaca.webp',
                 'black-ink.webp',
@@ -198,7 +215,21 @@ export function Hero() {
                   <button
                     key={name}
                     onClick={() => setSoundSet(key)}
-                    className={`flex-shrink-0 overflow-hidden rounded-lg p-2 transition-transform duration-150 ${isSelected ? 'ring-4 ring-white/40 scale-105' : 'ring-1 ring-white/10'}`}
+                    data-soundset={key}
+                    role="option"
+                    aria-selected={isSelected}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setSoundSet(key)
+                      } else if (e.key === 'ArrowRight') {
+                        e.preventDefault(); scrollSwitches(220)
+                      } else if (e.key === 'ArrowLeft') {
+                        e.preventDefault(); scrollSwitches(-220)
+                      }
+                    }}
+                    className={`flex-shrink-0 overflow-hidden rounded-lg p-2 transition-transform duration-150 focus:outline-none ${isSelected ? 'ring-4 ring-white/40 scale-105' : 'ring-1 ring-white/10'} ${isSelected ? 'focus:ring-4 focus:ring-white/40' : 'focus:ring-2 focus:ring-white/10'}`}
                     style={{ background: 'rgba(255,255,255,0.02)' }}
                     title={key}
                   >
@@ -218,9 +249,7 @@ export function Hero() {
           </div>
         </div>
 
-        <header className="relative z-10">
-          <Nav />
-        </header>
+        {/* Header is rendered globally by App.tsx (SiteNav) */}
 
         <div className="relative z-9 mx-auto flex h-full w-full max-w-6xl items-center px-6 py-12 lg:py-16">
           <div className="grid w-full gap-12 lg:grid-cols-2 lg:items-center">
@@ -240,9 +269,6 @@ export function Hero() {
                     typingSpeed={75}
                     pauseDuration={1500}
                     showCursor
-                    cursorCharacter="_"
-                    deletingSpeed={50}
-                    cursorBlinkDuration={0.5}
                   />
                 </div>
               </h1>
@@ -250,11 +276,7 @@ export function Hero() {
                 Use headphones for realistic key sounds. Start typing on the interactive 3D keyboard for the full experience.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button onClick={() => {
-                  const el = document.getElementById('projects')
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  else { window.location.hash = '#projects' }
-                }} className="hero-primary-btn">View Projects</button>
+                <button onClick={() => { window.location.hash = '#/projects' }} className="hero-primary-btn">View Projects</button>
                 <a href="#contact" className="hero-secondary-btn inline-flex items-center justify-center">Contact Me</a>
               </div>
                 <div className="text-xs uppercase tracking-[0.3em] text-white/40">
@@ -273,41 +295,7 @@ export function Hero() {
       {/* Skills section (rendered by component to avoid duplicate IDs) */}
       <SkillsSection />
 
-      <section id="projects" className="relative z-10 bg-transparent min-h-screen snap-start flex items-center">
-        <div className="mx-auto w-full max-w-6xl px-6 py-20 w-full">
-          <div className="mb-8 text-center">
-            <h2 className="font-display text-2xl font-semibold text-white">Projects</h2>
-            <p className="mt-2 text-sm text-white/70">A visual showcase of selected projects.</p>
-          </div>
-
-          <div className="mt-6 w-full">
-            {(() => {
-              const palette = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4']
-              const items = projects.map((p: any, i: number) => {
-                const rawStack = p.technologiesUsed ?? p.TechnologiesUsed ?? p.stack ?? p.technologies ?? p.tech
-                let stackArr: string[] = []
-                if (Array.isArray(rawStack)) stackArr = rawStack.map((s: any) => String(s).trim())
-                else if (typeof rawStack === 'string') stackArr = rawStack.split(/[,;]\s*/).map(s => s.trim()).filter(Boolean)
-
-                return {
-                  image: p.imageUrl ?? '/Media.jpg',
-                  title: p.title ?? 'Untitled',
-                  subtitle: (p.description ?? '').slice(0, 140),
-                  stack: stackArr,
-                  handle: p.handle ?? '',
-                  borderColor: palette[i % palette.length],
-                  gradient: `linear-gradient(145deg, ${palette[i % palette.length]}, #000)`,
-                  url: p.projectUrl ?? p.ProjectUrl
-                }
-              })
-
-              return (
-                <ChromaGrid items={items} radius={300} damping={0.45} fadeOut={0.6} ease="power3.out" />
-              )
-            })()}
-          </div>
-        </div>
-      </section>
+      {/* Projects moved to separate page: #/projects */}
 
 
 
@@ -322,108 +310,4 @@ export function Hero() {
 
 export default Hero
 
-function Nav() {
-  const [open, setOpen] = useState(false)
 
-  return (
-    <div className="mx-auto site-nav grid w-full max-w-6xl grid-cols-[auto_1fr_auto] items-center px-4 py-4">
-      <div className="flex items-center gap-3">
-        <a href="#home" aria-label="Home">
-          <img src="/logo-1.gif" alt="John Philip Garcia" className="h-10 w-auto logo-img" loading="eager" />
-        </a>
-      </div>
-
-      <nav className="hidden md:flex justify-center" aria-label="Primary">
-        <ul className="flex items-center gap-10 text-sm font-medium text-white/70">
-          <li>
-            <a className="transition hover:text-white" href="#home">
-              Home
-            </a>
-          </li>
-          <li>
-            <a className="transition hover:text-white" href="#skills">
-              Skills
-            </a>
-          </li>
-          <li>
-            
-            <a className="transition hover:text-white" href="#projects">
-              Projects
-            </a>
-          </li>
-          <li>
-            <a className="transition hover:text-white" href="#about">
-              About
-            </a>
-          </li>
-        </ul>
-      </nav>
-
-      <div className="flex items-center justify-end">
-        {/* Contact CTA visible on md+ */}
-        <div className="hidden md:flex items-center gap-3">
-          <a href="#contact" className="hero-primary-btn hero-nav-cta">Contact Me</a>
-        </div>
-
-        {/* Hamburger for small screens */}
-        <button
-          className="md:hidden ml-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/3 text-white/80 relative z-[100]"
-          aria-label="Menu"
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 7H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M4 12H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            <path d="M4 17H20" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </button>
-
-        {/* Mobile menu overlay */}
-        {open && (
-          <div className="mobile-menu fixed z-11 inset-0 flex items-start justify-center px-6 py-20">
-            <div className="mobile-menu-panel w-full max-w-md rounded-xl bg-[rgba(10,16,51,0.92)] p-6 shadow-2xl">
-              <div className="flex items-center justify-between">
-                <img src="/logo-1.gif" alt="John Philip Garcia logo" className="h-9 w-auto logo-img" loading="eager" />
-                <button
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white/3 text-white/80"
-                  onClick={() => setOpen(false)}
-                  aria-label="Close menu">
-                  ✕
-                </button>
-              </div>
-              <nav className="mt-6">
-                <ul className="flex flex-col gap-4 text-lg font-medium text-white">
-                  <li>
-                    <a href="#home" onClick={() => setOpen(false)}>
-                      Home
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#projects" onClick={() => setOpen(false)}>
-                      Projects
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#skills" onClick={() => setOpen(false)}>
-                      Skills
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#about" onClick={() => setOpen(false)}>
-                      About
-                    </a>
-                  </li>
-                </ul>
-                <div className="mt-6">
-                  <div>
-                    <a href="#contact" onClick={() => setOpen(false)} className="hero-primary-btn w-full">Contact Me</a>
-                  </div>
-                </div>
-              </nav>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}

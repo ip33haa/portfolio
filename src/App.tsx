@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import Hero from './components/Hero'
+import SiteNav from './components/SiteNav'
 import Seo from './lib/Seo'
 import AuthPage from './pages/Auth'
 import Admin from './pages/Admin'
+import Projects from './pages/Projects'
+import Documentation from './pages/Documentation'
 import ScrollToTop from './components/ScrollToTop'
 
 export function App() {
@@ -13,13 +16,12 @@ export function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
-  if (route.startsWith('#/auth')) return <AuthPage />
-  if (route.startsWith('#/admin')) return <Admin />
   return (
     <main className="relative h-screen w-screen overflow-y-auto snap-y snap-mandatory" role="main">
       <Seo />
-      {/* DotGrid moved into Hero so it shows only on the hero section */}
-      <Hero />
+      <SiteNav />
+      {/* Render route-specific content, SiteNav visible on all pages */}
+      {route.startsWith('#/auth') ? <AuthPage /> : route.startsWith('#/admin') ? <Admin /> : route.startsWith('#/projects') ? <Projects /> : route.startsWith('#/documentation') ? <Documentation /> : <Hero />}
       <ScrollToTop />
     </main>
   )
