@@ -175,6 +175,29 @@
   mix-blend-mode: soft-light;
 }
 
+.hero-corner-logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  width: 188px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 12px;
+  border-top-left-radius: 18px;
+  background: linear-gradient(270deg, rgba(7, 11, 20, 0.98) 0%, rgba(7, 11, 20, 0.93) 62%, rgba(7, 11, 20, 0) 100%);
+  pointer-events: auto;
+}
+
+.hero-corner-logo-img {
+  height: 64px;
+  width: 150px;
+  opacity: 0.98;
+  object-fit: fill;
+}
+
 
 .hero-glow {
   position: absolute;
@@ -293,6 +316,8 @@
   .site-nav::after { inset: 3px; }
   .hero-spline-frame { max-width: 100%; }
   .spline-placeholder { height: 220px !important; }
+  .hero-corner-logo { width: 156px; height: 50px; padding: 6px 10px; }
+  .hero-corner-logo-img { height: 30px; }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

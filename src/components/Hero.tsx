@@ -179,6 +179,9 @@ export function Hero() {
 
         {/* removed hero-veil and hero-vignette per request */}
         <div className="hero-grain" aria-hidden="true" />
+        <div className="hero-corner-logo" aria-hidden="true">
+          <img src="/logo-1.gif" alt="" className="hero-corner-logo-img" />
+        </div>
 
         {/* Bottom-aligned switches selector with scroll buttons (large screens) */}
         <div className="absolute left-0 right-0 bottom-6 z-30 flex justify-center px-6">
