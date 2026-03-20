@@ -21,6 +21,8 @@ export function Hero() {
   const [soundSet, setSoundSet] = useState<string>('turquoise')
   // soundSets and colors are implicit in the switches images list
 
+  const projectCountLabel = '43+'
+
   // Projects and documentation are rendered on their own pages (#/projects, #/documentation)
 
   useEffect(() => {
@@ -282,9 +284,15 @@ export function Hero() {
                 <button onClick={() => { window.location.hash = '#/projects' }} className="hero-primary-btn">View Projects</button>
                 <a href="#contact" className="hero-secondary-btn inline-flex items-center justify-center">Contact Me</a>
               </div>
-                <div className="text-xs uppercase tracking-[0.3em] text-white/40">
-                  Available for select collaborations
-                </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-cyan-300">
+                <span>{`${projectCountLabel} Projects`}</span>
+                <span className="text-white/40">•</span>
+                <span className="text-white/70">Built and maintained in this portfolio</span>
+              </div>
+
+              <div className="text-xs uppercase tracking-[0.3em] text-white/40">
+                Available for select collaborations
+              </div>
 
                 {/* sound-set buttons removed here; images on right act as selectors */}
               </div>
