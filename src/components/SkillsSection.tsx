@@ -1,46 +1,37 @@
 import { useState } from 'react'
-import LogoLoop from './LogoLoop'
 
 const SkillsSection: React.FC = () => {
-  // Use all PNG files from public/tech-stacks — hardcoded list
-  const localFiles = [
-    'adobe.png',
-    'Angular.png',
-    'AWS.png',
-    'Azure Devops.png',
-    'Azure.png',
-    'BitBucket.png',
-    'Blender.png',
-    'C.png',
-    'CSS3.png',
-    'cursor-ai.png',
-    'Docker.png',
-    'Figma.png',
-    'GitHub.png',
-    'githubcopilot.png',
-    'HTML5.png',
-    'Java.png',
-    'JavaScript.png',
-    'Microsoft SQL Server.png',
-    'MySQL.png',
-    'NET.png',
-    'Node.js.png',
-    'PHP.png',
-    'Postman.png',
-    'React.png',
-    'Swagger.png',
-    'Tailwind CSS.png',
-    'Three.js.png',
-    'TypeScript.png',
-    'WordPress.png'
+  const skills = [
+    { name: 'Adobe', icon: '/tech-stacks/adobe.png' },
+    { name: 'Angular', icon: '/tech-stacks/Angular.png' },
+    { name: 'AWS', icon: '/tech-stacks/AWS.png' },
+    { name: 'Azure', icon: '/tech-stacks/Azure.png' },
+    { name: 'Bitbucket', icon: '/tech-stacks/BitBucket.png' },
+    { name: 'Blender', icon: '/tech-stacks/Blender.png' },
+    { name: 'C', icon: '/tech-stacks/C.png' },
+    { name: 'CSS3', icon: '/tech-stacks/CSS3.png' },
+    { name: 'Cursor AI', icon: '/tech-stacks/cursor-ai.png' },
+    { name: 'Docker', icon: '/tech-stacks/Docker.png' },
+    { name: 'Figma', icon: '/tech-stacks/Figma.png' },
+    { name: 'GitHub', icon: '/tech-stacks/GitHub.png' },
+    { name: 'GitHub Copilot', icon: '/tech-stacks/githubcopilot.png' },
+    { name: 'HTML5', icon: '/tech-stacks/HTML5.png' },
+    { name: 'Java', icon: '/tech-stacks/Java.png' },
+    { name: 'JavaScript', icon: '/tech-stacks/JavaScript.png' },
+    { name: 'Microsoft SQL Server', icon: '/tech-stacks/Microsoft SQL Server.png' },
+    { name: 'MySQL', icon: '/tech-stacks/MySQL.png' },
+    { name: '.NET', icon: '/tech-stacks/NET.png' },
+    { name: 'Node.js', icon: '/tech-stacks/Node.js.png' },
+    { name: 'PHP', icon: '/tech-stacks/PHP.png' },
+    { name: 'Postman', icon: '/tech-stacks/Postman.png' },
+    { name: 'React', icon: '/tech-stacks/React.png' },
+    { name: 'Swagger', icon: '/tech-stacks/Swagger.png' },
+    { name: 'Tailwind CSS', icon: '/tech-stacks/Tailwind CSS.png' },
+    { name: 'Three.js', icon: '/tech-stacks/Three.js.png' },
+    { name: 'TypeScript', icon: '/tech-stacks/TypeScript.png' },
+    { name: 'WordPress', icon: '/tech-stacks/WordPress.png' },
+    { name: 'Claude AI', icon: 'https://static.vecteezy.com/system/resources/previews/067/941/712/non_2x/claude-ai-logo-rounded-hd-free-png.png' }
   ]
-
-  const finalItems = localFiles.map((f) => ({
-    src: `/tech-stacks/${encodeURI(f)}`,
-    alt: f.replace(/\.[^.]+$/, ''),
-    title: f.replace(/\.[^.]+$/, ''),
-    file: f
-  }))
 
   return (
     <section id="skills" className="relative z-10 bg-transparent min-h-screen snap-start flex items-center">
@@ -52,38 +43,37 @@ const SkillsSection: React.FC = () => {
         
         <ExperienceCards />
 
-        <div>
-          <LogoLoop
-            logos={finalItems}
-            speed={50}
-            gap={80}
-            logoHeight={104}
-            pauseOnHover
-            scaleOnHover
-            className="w-full"
-            renderItem={(item: any, key) => {
-              const circleFiles = new Set([
-                'AWS.png',
-                'GitHub.png',
-                'Microsoft SQL Server.png',
-                'Three.js.png',
-                'WordPress.png'
-              ])
-              const needsCircle = circleFiles.has(item.file)
+        <div className="mt-6">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
+            {skills.map((skill) => (
+              <div
+                key={skill.name}
+                className="group rounded-lg border border-white/10 bg-white/5 p-3 text-center transition hover:border-cyan-300/60 hover:bg-white/15"
+                title={skill.name}
+              >
+                {skill.icon ? (
+                  <img
+                    src={skill.icon}
+                    alt={skill.name}
+                    className="mx-auto h-14 w-14 object-contain"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-white/20 text-xs text-white/80">N/A</div>
+                )}
+                <div className="mt-2 text-xs font-semibold text-white/80">
+                  {skill.name}
+                </div>
+                <div className="mt-1 text-xs text-white/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {skill.name} is a core tool
+                </div>
+              </div>
+            ))}
+          </div>
 
-              if (needsCircle) {
-                return (
-                  <div key={key} className="rounded-full bg-white p-3 inline-flex items-center justify-center">
-                    <img src={item.src} alt={item.alt} title={item.title} className="h-20 w-auto object-contain" loading="lazy" decoding="async" />
-                  </div>
-                )
-              }
-
-              return (
-                <img key={key} src={item.src} alt={item.alt} title={item.title} className="h-[var(--logoloop-logoHeight)] w-auto object-contain" loading="lazy" decoding="async" />
-              )
-            }}
-          />
+          <div className="mt-5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 p-3 text-sm text-indigo-100 font-mono">
+            <code>const aiAssistants = ['GitHub Copilot', 'Claude AI', 'Cursor AI']</code>
+          </div>
         </div>
       </div>
     </section>
