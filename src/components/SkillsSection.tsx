@@ -89,7 +89,7 @@ function ExperienceCards() {
     {
       role: 'Lead .NET Developer',
       company: 'Offshore Business Processing',
-      dates: 'Jan 2023 - Present',
+      dates: 'Jan 2025 - Present',
       logo: '/project-logo/obp-logo 2.png',
       href: 'https://www.offshorebusinessprocessing.com/'
     },
