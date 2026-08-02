@@ -1,66 +1,95 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDeckStore } from "../../store/deckStore";
-import { useLeftJoystickNav } from "../../hooks/useLeftJoystickNav";
-import { MENU_ITEMS } from "../../data/menuItems";
-import { JzlPortfolioEmbed } from "./JzlPortfolioEmbed";
+import { useDeckGridNav } from "../../hooks/useDeckGridNav";
+import { useButtonEdge } from "../../hooks/useButtonEdge";
+import {
+  LIBRARY_ITEMS,
+  LIBRARY_TABS,
+  itemsForTab,
+  type LibraryTabId,
+} from "../../data/libraryItems";
+import { DeckLibraryHeader } from "../steam-ui/DeckLibraryHeader";
+import { DeckLibraryFooter } from "../steam-ui/DeckLibraryFooter";
+import { DeckPosterTile } from "../steam-ui/DeckPosterTile";
+
+const GRID_COLUMNS = 5;
 
 export function MainMenu() {
   const navigateTo = useDeckStore((s) => s.navigateTo);
   const selectedIndex = useDeckStore((s) => s.selectedIndex);
   const setSelectedIndex = useDeckStore((s) => s.setSelectedIndex);
   const pressedButtons = useDeckStore((s) => s.pressedButtons);
-  const selected = MENU_ITEMS[selectedIndex] ?? MENU_ITEMS[0];
 
-  useLeftJoystickNav(MENU_ITEMS.length);
+  const [tabIndex, setTabIndex] = useState(0);
+  const activeTab = LIBRARY_TABS[tabIndex] ?? LIBRARY_TABS[0];
+  const visibleItems = useMemo(() => itemsForTab(activeTab.id), [activeTab.id]);
+  const selected = visibleItems[selectedIndex] ?? visibleItems[0];
+
+  const tileRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const tabCounts = useMemo(() => {
+    const counts: Record<LibraryTabId, number> = {} as Record<LibraryTabId, number>;
+    for (const tab of LIBRARY_TABS) {
+      counts[tab.id] = LIBRARY_ITEMS.filter(tab.filter).length;
+    }
+    return counts;
+  }, []);
+
+  useDeckGridNav(visibleItems.length, GRID_COLUMNS, selectedIndex, setSelectedIndex);
+
+  useButtonEdge("L1", () => setTabIndex((i) => Math.max(0, i - 1)));
+  useButtonEdge("R1", () => setTabIndex((i) => Math.min(LIBRARY_TABS.length - 1, i + 1)));
 
   useEffect(() => {
-    if (pressedButtons.has("A")) {
-      navigateTo(MENU_ITEMS[selectedIndex].app);
+    setSelectedIndex(0);
+  }, [tabIndex, setSelectedIndex]);
+
+  useEffect(() => {
+    if (selectedIndex >= visibleItems.length) {
+      setSelectedIndex(Math.max(0, visibleItems.length - 1));
     }
-  }, [pressedButtons, selectedIndex, navigateTo]);
+  }, [selectedIndex, visibleItems.length, setSelectedIndex]);
+
+  useEffect(() => {
+    tileRefs.current[selectedIndex]?.scrollIntoView({
+      block: "nearest",
+      inline: "nearest",
+      behavior: "smooth",
+    });
+  }, [selectedIndex, tabIndex]);
+
+  useEffect(() => {
+    if (pressedButtons.has("A") && selected) {
+      navigateTo(selected.app);
+    }
+  }, [pressedButtons, selected, navigateTo]);
 
   return (
-    <div className="w-full h-full flex bg-neutral-900 min-h-0">
-      <div className="w-64 shrink-0 border-r border-neutral-800 py-6">
-        {MENU_ITEMS.map((item, i) => (
-          <button
-            key={item.app}
-            type="button"
-            data-testid={`menu-${item.app}`}
-            onClick={() => navigateTo(item.app)}
-            onMouseEnter={() => setSelectedIndex(i)}
-            className={`w-full text-left px-6 py-3 flex items-center gap-3 text-lg transition-colors ${
-              selectedIndex === i
-                ? "bg-blue-600 text-white"
-                : "text-neutral-300 hover:bg-neutral-800"
-            }`}
-          >
-            <span>{item.icon}</span>
-            {item.label}
-          </button>
-        ))}
+    <div className="w-full h-full flex flex-col deck-library-bg text-white min-h-0">
+      <DeckLibraryHeader
+        tabs={LIBRARY_TABS}
+        activeTabIndex={tabIndex}
+        itemCounts={tabCounts}
+      />
+
+      <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-5 pb-4">
+        <div className="grid grid-cols-5 gap-3.5">
+          {visibleItems.map((item, index) => (
+            <DeckPosterTile
+              key={item.id}
+              item={item}
+              selected={index === selectedIndex}
+              onSelect={() => setSelectedIndex(index)}
+              onActivate={() => navigateTo(item.app)}
+              tileRef={(el) => {
+                tileRefs.current[index] = el;
+              }}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-w-0 min-h-0">
-        {selected.app === "about" ? (
-          <>
-            <div className="flex-1 min-h-0 relative">
-              <JzlPortfolioEmbed scrollEnabled />
-            </div>
-            <p className="shrink-0 text-center text-xs text-neutral-500 py-2 border-t border-neutral-800">
-              Right stick to scroll · A for full screen · B back from About
-            </p>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-neutral-500">
-            <div className="text-center px-8">
-              <div className="text-5xl mb-4">🎮</div>
-              <div className="text-lg mb-2">Left joystick or D-pad to move, A to open</div>
-              <p className="text-sm text-neutral-600">Pick Games to browse the library</p>
-            </div>
-          </div>
-        )}
-      </div>
+      <DeckLibraryFooter />
     </div>
   );
 }

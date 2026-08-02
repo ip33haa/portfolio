@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 690" width="460" height="690">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <rect width="460" height="690" fill="url(#bg)"/>
+  <circle cx="230" cy="260" r="90" fill="rgba(255,255,255,0.08)"/>
+  <text x="230" y="250" text-anchor="middle" font-family="system-ui,sans-serif" font-size="72" fill="white">=d</text>
+  <text x="230" y="420" text-anchor="middle" font-family="system-ui,sans-serif" font-size="42" font-weight="700" fill="white">About Me</text>
+  <text x="230" y="470" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="rgba(255,255,255,0.65)">JZL Portfolio</text>
+  <text x="230" y="640" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="rgba(255,255,255,0.35)">POSTER PLACEHOLDER</text>
+</svg>

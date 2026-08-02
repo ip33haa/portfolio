@@ -32,7 +32,14 @@ function GameCapsule({
       <div
         className={`relative aspect-[460/215] bg-gradient-to-br ${game.gradient} overflow-hidden`}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)]" />
+        <img
+          src={game.posterImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          loading="lazy"
+          draggable={false}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/30 to-transparent mix-blend-multiply" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-3">
           <p className="text-lg font-bold text-white drop-shadow-md leading-tight">{game.title}</p>

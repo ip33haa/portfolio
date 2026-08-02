@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { GameAppId } from "../data/gamesCatalog";
-import { MENU_ITEMS } from "../data/menuItems";
 
 /**
  * "currentApp" mirrors what's shown on the Steam Deck's screen —
@@ -74,17 +73,13 @@ export const useDeckStore = create<DeckState>((set, get) => ({
 
     const app = get().currentApp;
 
-    // A confirms menu selection on press (gamepad-style)
-    if (id === "A" && app === "menu") {
-      get().navigateTo(MENU_ITEMS[get().selectedIndex]?.app ?? "about");
+    // Menu / library screens handle A themselves (grid select).
+    if (id === "A" && (app === "menu" || app === "games")) {
+      return;
     }
 
     if (id === "B" && app !== "menu") {
-      if (app.startsWith("game-")) {
-        set({ currentApp: "games" });
-      } else {
-        set({ currentApp: "menu" });
-      }
+      set({ currentApp: "menu" });
     }
     if (id === "Power") {
       get().poweredOn ? get().powerOff() : get().powerOn();
@@ -106,11 +101,7 @@ export const useDeckStore = create<DeckState>((set, get) => ({
   pressDpad: (direction) => {
     set({ pressedDpad: direction, lastDpad: direction });
     const app = get().currentApp;
-    if (app === "menu") {
-      const count = MENU_ITEMS.length;
-      if (direction === "up") get().moveSelection(-1, count);
-      if (direction === "down") get().moveSelection(1, count);
-    }
+    if (app === "menu" || app === "games") return;
   },
 
   releaseDpad: () => set({ pressedDpad: null }),

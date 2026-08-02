@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 690" width="460" height="690">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#422006"/>
+      <stop offset="50%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#facc15"/>
+    </linearGradient>
+  </defs>
+  <rect width="460" height="690" fill="url(#bg)"/>
+  <circle cx="230" cy="290" r="70" fill="#fbbf24" stroke="#1f2937" stroke-width="6"/>
+  <path d="M200 290 L260 290 M230 260 L230 320" stroke="#1f2937" stroke-width="8"/>
+  <circle cx="210" cy="275" r="8" fill="#1f2937"/>
+  <circle cx="250" cy="275" r="8" fill="#1f2937"/>
+  <text x="230" y="460" text-anchor="middle" font-family="system-ui,sans-serif" font-size="48" font-weight="700" fill="white">Pac-Man</text>
+  <text x="230" y="640" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="rgba(255,255,255,0.35)">POSTER PLACEHOLDER</text>
+</svg>

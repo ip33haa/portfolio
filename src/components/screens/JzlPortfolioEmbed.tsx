@@ -29,7 +29,7 @@ export function JzlPortfolioEmbed({
       )}
       {scrollEnabled && loaded && (
         <div className="absolute top-2 right-2 z-10 text-[10px] text-neutral-400 bg-black/60 px-2 py-1 rounded pointer-events-none">
-          Right stick to scroll
+          Right stick → arrow keys
         </div>
       )}
       <iframe

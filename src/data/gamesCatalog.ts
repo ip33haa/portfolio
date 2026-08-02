@@ -1,4 +1,5 @@
 import type { DeckApp } from "../store/deckStore";
+import { posterPath } from "./posterPaths";
 
 export type GameAppId =
   | "game-snake"
@@ -16,6 +17,8 @@ export type GameEntry = {
   embedUrl?: string;
   /** Tailwind gradient stops for capsule art */
   gradient: string;
+  /** Vertical library poster (placeholder SVG in /public/posters/) */
+  posterImage: string;
   tags: string[];
   hoursPlayed?: string;
 };
@@ -27,6 +30,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     tagline: "Both sticks or D-pad to steer",
     type: "native",
     gradient: "from-sky-950 via-blue-800 to-cyan-500",
+    posterImage: posterPath("game-snake"),
     tags: ["Arcade", "Deck Native"],
     hoursPlayed: "∞",
   },
@@ -37,6 +41,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     type: "embed",
     embedUrl: "https://www.crazygames.com/embed/2048",
     gradient: "from-amber-950 via-orange-800 to-yellow-500",
+    posterImage: posterPath("game-2048"),
     tags: ["Puzzle", "Free"],
   },
   {
@@ -46,6 +51,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     type: "embed",
     embedUrl: "https://hextris.github.io/hextris/",
     gradient: "from-fuchsia-950 via-purple-800 to-pink-500",
+    posterImage: posterPath("game-hextris"),
     tags: ["Puzzle", "Free"],
   },
   {
@@ -55,6 +61,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     type: "embed",
     embedUrl: "https://www.crazygames.com/embed/minesweeper",
     gradient: "from-emerald-950 via-green-800 to-lime-500",
+    posterImage: posterPath("game-minesweeper"),
     tags: ["Strategy", "Free"],
   },
   {
@@ -64,6 +71,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     type: "embed",
     embedUrl: "https://www.crazygames.com/embed/pacman",
     gradient: "from-yellow-950 via-amber-700 to-yellow-400",
+    posterImage: posterPath("game-pacman"),
     tags: ["Arcade", "Free"],
   },
   {
@@ -73,6 +81,7 @@ export const GAMES_CATALOG: GameEntry[] = [
     type: "embed",
     embedUrl: "https://www.crazygames.com/embed/tetris",
     gradient: "from-indigo-950 via-violet-800 to-blue-500",
+    posterImage: posterPath("game-tetris"),
     tags: ["Puzzle", "Free"],
   },
 ];
