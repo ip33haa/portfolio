@@ -10,7 +10,14 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+test-results
+playwright-report
+.env
+.env.local
 *.local
+
+# Unused legacy exports (too large for GitHub — app uses public/models/SteamDeck/Steam.gltf)
+public/models/*.glb
 
 # Editor directories and files
 .vscode/*

@@ -1,52 +1,41 @@
-import { useEffect, useState } from 'react'
-import Hero from './components/Hero'
-import SiteNav from './components/SiteNav'
-import GlobalFooter from './components/GlobalFooter'
-import Seo from './lib/Seo'
-import AuthPage from './pages/Auth'
-import Admin from './pages/Admin'
-import Projects from './pages/Projects'
-import Documentation from './pages/Documentation'
-import ScrollToTop from './components/ScrollToTop'
+import { Scene } from "./components/Scene";
+import { ModelErrorBoundary } from "./components/ModelErrorBoundary";
+import { LoadingOverlay } from "./components/LoadingOverlay";
+import Ferrofluid from "./components/Ferrofluid";
+import { PowerToggle } from "./components/PowerToggle";
 
-export function App() {
-  const [route, setRoute] = useState<string>(window.location.hash || '#/')
-
-  useEffect(() => {
-    const onHash = () => setRoute(window.location.hash || '#/')
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [])
-
-  const isAuthRoute = route.startsWith('#/auth')
-  const isAdminRoute = route.startsWith('#/admin')
-  const isProjectsRoute = route.startsWith('#/projects')
-  const isDocumentationRoute = route.startsWith('#/documentation')
-  const isLandingRoute = !isAuthRoute && !isAdminRoute && !isProjectsRoute && !isDocumentationRoute
-  const shouldShowTopNav = !isAuthRoute && !isAdminRoute
-
+export default function App() {
   return (
-    <main
-      className={`relative h-screen w-screen overflow-y-auto ${isLandingRoute ? 'snap-y snap-mandatory' : ''}`}
-      role="main"
-    >
-      <Seo />
-      {shouldShowTopNav && <SiteNav />}
-      {isAuthRoute ? (
-        <AuthPage />
-      ) : isAdminRoute ? (
-        <Admin />
-      ) : isProjectsRoute ? (
-        <Projects />
-      ) : isDocumentationRoute ? (
-        <Documentation />
-      ) : (
-        <Hero />
-      )}
-      <GlobalFooter snap={isLandingRoute} />
-      <ScrollToTop />
-    </main>
-  )
-}
+    <div className="relative w-screen h-screen overflow-hidden bg-black">
+      <div className="absolute inset-0 z-0" aria-hidden>
+        <Ferrofluid
+          colors={["#ffffff", "#ffffff", "#ffffff"]}
+          backgroundColor="#03010A"
+          speed={0.5}
+          scale={1.6}
+          turbulence={1}
+          fluidity={0.1}
+          rimWidth={0.2}
+          sharpness={2.5}
+          shimmer={1.5}
+          glow={2}
+          flowDirection="down"
+          opacity={1}
+          mouseInteraction
+          mouseStrength={1}
+          mouseRadius={0.35}
+        />
+      </div>
 
-export default App
+      <LoadingOverlay />
+
+      <ModelErrorBoundary>
+        <div className="absolute inset-0 z-10">
+          <Scene />
+        </div>
+      </ModelErrorBoundary>
+
+      <PowerToggle />
+    </div>
+  );
+}

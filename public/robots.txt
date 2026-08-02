@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-# To publish a sitemap with absolute URLs for production do:
-# SITE_URL=https://example.com npm run generate-sitemap
