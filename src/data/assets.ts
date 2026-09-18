@@ -3,9 +3,30 @@ export type FocusPoint = {
   y: number;
 };
 
+export const SEQUENCE_COUNT = 149;
+export const SEQUENCE_UNTIL = 0.26;
+export const SEQUENCE_WELCOME_UNTIL = 50;
+export const SEQUENCE_BEGINNING_FROM = 80;
+export const SEQUENCE_BEGINNING_UNTIL = 105;
+export const SEQUENCE_CRYSTAL1_FROM = 120;
+export const SEQUENCE_CRYSTAL1_UNTIL = 133;
+
+export function sequenceFrame(index: number) {
+  const n = String(Math.min(SEQUENCE_COUNT, Math.max(1, index + 1))).padStart(4, "0");
+  return `/images/journey/frame_${n}.png`;
+}
+
+export const MAGIC_COUNT = 220;
+export const MAGIC_CV_FROM = 205;
+
+export function magicFrame(index: number) {
+  const n = String(Math.min(MAGIC_COUNT, Math.max(1, index + 1))).padStart(4, "0");
+  return `/images/magic/frame_${n}.png`;
+}
+
 export const plates = {
-  wide: "/images/dome-wide.webp",
-  close: "/images/tree-close.webp",
+  wide: sequenceFrame(0),
+  close: sequenceFrame(SEQUENCE_BEGINNING_UNTIL - 1),
   top: "/images/dome-top.webp",
   final: "/images/dome-final.webp",
   crystals: {
@@ -31,8 +52,18 @@ export const focus = {
 } satisfies Record<string, FocusPoint>;
 
 export const preloadImages = [
-  plates.wide,
-  plates.close,
+  sequenceFrame(0),
+  sequenceFrame(12),
+  sequenceFrame(26),
+  sequenceFrame(40),
+  sequenceFrame(SEQUENCE_BEGINNING_FROM - 1),
+  sequenceFrame(SEQUENCE_CRYSTAL1_FROM - 1),
+  sequenceFrame(SEQUENCE_COUNT - 1),
   plates.top,
   plates.final,
+  magicFrame(0),
+  magicFrame(MAGIC_COUNT - 1),
 ];
+
+export const sequenceImages = Array.from({ length: SEQUENCE_COUNT }, (_, i) => sequenceFrame(i));
+export const magicImages = Array.from({ length: MAGIC_COUNT }, (_, i) => magicFrame(i));

@@ -1,4 +1,4 @@
-import { Globe, Mouse, Volume2, VolumeX } from "lucide-react";
+import { ChevronDown, Globe, Mouse, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { cameraAt, cinematicLengthVh, sceneScrollAt } from "../../data/camera";
@@ -8,6 +8,7 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { useScrollProgress, useScrollVelocity } from "../../hooks/useScrollProgress";
 import { Button } from "../UI/Button";
+import { MagicSequence } from "./MagicSequence";
 import { Icon } from "../UI/Icon";
 import { CameraScene } from "./CameraScene";
 import { CrystalNavigation } from "./CrystalNavigation";
@@ -71,24 +72,20 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
   }
 
   return (
-    <div ref={trackRef} className="relative" style={{ height: `${cinematicLengthVh}vh` }}>
+    <>
+    <div ref={trackRef} data-testid="cinematic-track" className="relative" style={{ height: `${cinematicLengthVh}vh` }}>
       <div className="sticky top-0 h-dvh overflow-hidden">
         <CameraScene camera={camera} reduced={reduced} />
-        <TreeScene intensity={camera.sceneIndex <= 1 ? 1 : 0.35} />
+        <TreeScene intensity={camera.sequenced ? 0.35 : camera.sceneIndex <= 1 ? 1 : 0.35} />
         <CrystalScene crystal={scene.crystal} glow={Math.min(1, camera.glow + velocity * 0.25)} />
         <ParticleLayer color={scene.accent} density={isMobile ? 50 : 90} enabled={!reduced} />
         <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
         <CrystalNavigation activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
         <ScrollProgress progress={progress} />
-        <div className="absolute inset-0 z-20 flex items-end p-8 pb-16 md:p-16">
-          <SceneText scene={scene} visible />
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center p-10 md:px-16 md:py-24">
+          <SceneText scene={scene} visible={camera.textVisible} />
         </div>
-        {camera.sceneIndex === 0 ? (
-          <p className="absolute bottom-8 left-8 z-30 flex items-center gap-3 text-[10px] tracking-[0.32em] text-white/55">
-            <Icon icon={Mouse} label="Scroll" />
-            SCROLL TO BEGIN
-          </p>
-        ) : null}
+        {camera.sceneIndex === 0 && camera.textVisible ? <ScrollToBegin /> : null}
         {camera.sceneIndex === 8 ? (
           <p className="absolute right-16 bottom-16 z-30 text-[10px] tracking-[0.28em] text-white/50">
             01 → 02 → 03 → 04 → 05 → 06
@@ -100,6 +97,20 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
           </div>
         ) : null}
       </div>
+    </div>
+    <MagicSequence />
+    </>
+  );
+}
+
+function ScrollToBegin() {
+  return (
+    <div className="pointer-events-none absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55">
+      <p className="flex items-center gap-3 text-[10px] tracking-[0.32em]">
+        <Icon icon={Mouse} label="Scroll" className="h-4 w-4" />
+        SCROLL TO BEGIN
+      </p>
+      <Icon icon={ChevronDown} label="Scroll down" className="scroll-hint-arrow h-6 w-6" />
     </div>
   );
 }
@@ -204,14 +215,11 @@ function CinematicPanels({
               <SceneText scene={scene} visible compact />
               {scene.id === "growing" ? <ClosingActions /> : null}
             </div>
-            {scene.id === "welcome" ? (
-              <p className="absolute bottom-8 left-6 z-10 text-[10px] tracking-[0.28em] text-white/50">
-                SCROLL TO BEGIN
-              </p>
-            ) : null}
+            {scene.id === "welcome" ? <ScrollToBegin /> : null}
           </Scene>
         );
       })}
+      <MagicSequence />
     </div>
   );
 }

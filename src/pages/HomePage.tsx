@@ -2,13 +2,31 @@ import { useEffect, useState } from "react";
 import { CinematicExperience } from "../components/CinematicPortfolio/CinematicExperience";
 import { ProjectGrid } from "../components/Portfolio/ProjectGrid";
 import { LoadingScreen } from "../components/UI/LoadingScreen";
-import { preloadImages } from "../data/assets";
+import { preloadImages, sequenceImages, magicImages } from "../data/assets";
 import { useJourneyAudio } from "../hooks/useJourneyAudio";
+
+const ENTERED_KEY = "tree-of-growth:entered";
+
+function hasEnteredJourney() {
+  try {
+    return sessionStorage.getItem(ENTERED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markJourneyEntered() {
+  try {
+    sessionStorage.setItem(ENTERED_KEY, "1");
+  } catch {
+    /* private mode */
+  }
+}
 
 export function HomePage() {
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
-  const [entered, setEntered] = useState(false);
+  const [entered, setEntered] = useState(hasEnteredJourney);
   const [soundOn, setSoundOn] = useState(true);
   const playMusic = useJourneyAudio(entered && soundOn);
 
@@ -38,6 +56,14 @@ export function HomePage() {
     };
   }, [entered]);
 
+  useEffect(() => {
+    if (!entered) return;
+    [...sequenceImages, ...magicImages].forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [entered]);
+
   return (
     <>
       {!entered ? (
@@ -45,6 +71,7 @@ export function HomePage() {
           progress={progress}
           ready={ready}
           onEnter={() => {
+            markJourneyEntered();
             playMusic();
             setEntered(true);
           }}

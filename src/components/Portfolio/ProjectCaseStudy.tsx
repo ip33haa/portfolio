@@ -41,17 +41,26 @@ export function ProjectCaseStudy({ project }: Props) {
       <img
         src={project.image}
         alt=""
-        className="mt-12 h-72 w-full rounded-sm object-cover opacity-90 md:h-[420px]"
+        className="mt-12 h-72 w-full rounded-sm object-cover object-top opacity-90 md:h-[420px]"
       />
+      {project.screenshots && project.screenshots.length > 1 ? (
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {project.screenshots.map((shot) => (
+            <li key={shot.href}>
+              <a href={shot.href} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-sm border border-white/10">
+                <img src={shot.href} alt={shot.label} className="h-40 w-full object-cover object-top" />
+                <p className="px-3 py-2 text-[10px] tracking-[0.2em] uppercase text-white/50">{shot.label}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <div className="mt-14 space-y-12">
         <Block title="Overview" body={project.overview} />
-        <Block title="Problem" body={project.problem} />
-        <Block title="My Role" body={project.myRole} />
-        <Block title="What I Built" body={project.whatIBuilt} />
-        <Block title="Architecture" body={project.architecture} />
-        <Block title="Challenges" body={project.challenges} />
-        <Block title="Solutions" body={project.solutions} />
-        <Block title="Results / Impact" body={project.results} />
+        <Block title="Situation" body={project.situation} />
+        <Block title="Task" body={project.task} />
+        <Block title="Action" body={project.action} />
+        <Block title="Result" body={project.result} />
         <section>
           <h2 className="text-[11px] tracking-[0.28em] text-white/45 uppercase">Technologies</h2>
           <ul className="mt-4 flex flex-wrap gap-2">

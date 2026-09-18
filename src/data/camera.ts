@@ -1,4 +1,15 @@
-import { focus, plates } from "./assets";
+import {
+  focus,
+  plates,
+  sequenceFrame,
+  SEQUENCE_BEGINNING_FROM,
+  SEQUENCE_BEGINNING_UNTIL,
+  SEQUENCE_COUNT,
+  SEQUENCE_CRYSTAL1_FROM,
+  SEQUENCE_CRYSTAL1_UNTIL,
+  SEQUENCE_UNTIL,
+  SEQUENCE_WELCOME_UNTIL,
+} from "./assets";
 import type { FocusPoint } from "./assets";
 
 export type CameraState = {
@@ -12,6 +23,8 @@ export type CameraState = {
   flash: number;
   glow: number;
   sceneIndex: number;
+  sequenced: boolean;
+  textVisible: boolean;
 };
 
 type Keyframe = {
@@ -29,10 +42,7 @@ type Keyframe = {
 };
 
 const frames: Keyframe[] = [
-  { at: 0, plate: plates.wide, origin: focus.wide, scale: 1.06, x: 0, y: 0, rotate: 0, blur: 0, flash: 0, glow: 0.2, sceneIndex: 0 },
-  { at: 0.08, plate: plates.wide, origin: focus.wide, scale: 1.18, x: 0, y: 1, rotate: 0, blur: 0.4, flash: 0, glow: 0.35, sceneIndex: 0 },
-  { at: 0.16, plate: plates.close, origin: focus.tree, scale: 1.55, x: 0, y: 2, rotate: 0.2, blur: 1.2, flash: 0, glow: 0.4, sceneIndex: 1 },
-  { at: 0.26, plate: plates.crystals[1], origin: focus.c1, scale: 2.35, x: -2, y: 4, rotate: -0.4, blur: 1.6, flash: 0, glow: 0.85, sceneIndex: 2 },
+  { at: SEQUENCE_UNTIL, plate: sequenceFrame(SEQUENCE_COUNT - 1), origin: focus.c1, scale: 1, x: 0, y: 0, rotate: 0, blur: 0, flash: 0, glow: 0.85, sceneIndex: 2 },
   { at: 0.36, plate: plates.crystals[2], origin: focus.c2, scale: 2.45, x: 4, y: 3, rotate: 0.6, blur: 1.5, flash: 0, glow: 0.9, sceneIndex: 3 },
   { at: 0.46, plate: plates.crystals[3], origin: focus.c3, scale: 2.4, x: -5, y: 3, rotate: -0.8, blur: 1.4, flash: 0, glow: 0.9, sceneIndex: 4 },
   { at: 0.56, plate: plates.crystals[4], origin: focus.c4, scale: 2.55, x: 3, y: 6, rotate: 0.5, blur: 1.3, flash: 0, glow: 1, sceneIndex: 5 },
@@ -58,6 +68,38 @@ function easeInOut(t: number) {
 
 export function cameraAt(progress: number): CameraState {
   const p = Math.min(1, Math.max(0, progress));
+
+  if (p <= SEQUENCE_UNTIL) {
+    const t = SEQUENCE_UNTIL === 0 ? 0 : p / SEQUENCE_UNTIL;
+    const idx = Math.min(SEQUENCE_COUNT - 1, Math.round(t * (SEQUENCE_COUNT - 1)));
+    const frame = idx + 1;
+    const caption =
+      frame <= SEQUENCE_WELCOME_UNTIL
+        ? 0
+        : frame >= SEQUENCE_BEGINNING_FROM && frame <= SEQUENCE_BEGINNING_UNTIL
+          ? 1
+          : frame >= SEQUENCE_CRYSTAL1_FROM && frame <= SEQUENCE_CRYSTAL1_UNTIL
+            ? 2
+            : null;
+    const sceneIndex =
+      caption ??
+      (frame < SEQUENCE_BEGINNING_FROM ? 0 : frame < SEQUENCE_CRYSTAL1_FROM ? 1 : 2);
+    return {
+      plate: sequenceFrame(idx),
+      origin: { x: 0.5, y: 0.5 },
+      scale: 1,
+      x: 0,
+      y: 0,
+      rotate: 0,
+      blur: 0,
+      flash: 0,
+      glow: frame >= SEQUENCE_CRYSTAL1_FROM ? 0.85 : 0.22 + t * 0.18,
+      sceneIndex,
+      sequenced: true,
+      textVisible: caption !== null,
+    };
+  }
+
   let i = 0;
   while (i < frames.length - 1 && frames[i + 1].at < p) i += 1;
   const a = frames[i];
@@ -76,9 +118,26 @@ export function cameraAt(progress: number): CameraState {
     flash: lerp(a.flash, b.flash, t),
     glow: lerp(a.glow, b.glow, t),
     sceneIndex: t < 0.45 ? a.sceneIndex : b.sceneIndex,
+    sequenced: false,
+    textVisible: true,
   };
 }
 
 export const cinematicLengthVh = 1100;
 
-export const sceneScrollAt = [0, 0.12, 0.22, 0.32, 0.42, 0.52, 0.62, 0.7, 0.84, 0.92];
+function progressAtFrame(frame: number) {
+  return ((frame - 1) / (SEQUENCE_COUNT - 1)) * SEQUENCE_UNTIL;
+}
+
+export const sceneScrollAt = [
+  0,
+  progressAtFrame(SEQUENCE_BEGINNING_FROM),
+  progressAtFrame(SEQUENCE_CRYSTAL1_FROM),
+  0.32,
+  0.42,
+  0.52,
+  0.62,
+  0.7,
+  0.84,
+  0.92,
+];

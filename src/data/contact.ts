@@ -8,4 +8,6 @@ export const contact = {
   linkedin: "https://www.linkedin.com/in/john-philip-g-01704b210",
   github: "https://github.com/ip33haa",
   location: "Las Piñas City, Philippines",
+  cv: "/cv/John-Philip-Garcia.pdf",
+  cvPreview: "/cv/John-Philip-Garcia.png",
 } as const;

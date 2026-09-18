@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { CameraState } from "../../data/camera";
 
 type Props = {
@@ -6,18 +7,28 @@ type Props = {
 };
 
 export function CameraScene({ camera, reduced }: Props) {
-  const scale = reduced ? 1.05 : camera.scale;
-  const blur = reduced ? 0 : camera.blur;
+  const [shown, setShown] = useState(camera.plate);
+  const scale = camera.sequenced || reduced ? 1 : camera.scale;
+  const blur = camera.sequenced || reduced ? 0 : camera.blur;
+
+  useEffect(() => {
+    if (shown === camera.plate) return;
+    const img = new Image();
+    img.onload = () => setShown(camera.plate);
+    img.src = camera.plate;
+  }, [camera.plate, shown]);
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-black">
       <img
-        src={camera.plate}
+        src={shown}
         alt="Interior of a bronze dome with a flowering tree and six glowing crystals"
         className="h-full w-full object-cover will-change-transform"
         style={{
           transformOrigin: `${camera.origin.x * 100}% ${camera.origin.y * 100}%`,
-          transform: `translate3d(${camera.x}%, ${camera.y}%, 0) scale(${scale}) rotate(${camera.rotate}deg)`,
+          transform: camera.sequenced
+            ? "none"
+            : `translate3d(${camera.x}%, ${camera.y}%, 0) scale(${scale}) rotate(${camera.rotate}deg)`,
           filter: blur > 0.05 ? `blur(${blur}px)` : "none",
         }}
       />
