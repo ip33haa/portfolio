@@ -70,7 +70,7 @@ export function cameraAt(progress: number): CameraState {
   const p = Math.min(1, Math.max(0, progress));
 
   if (p <= SEQUENCE_UNTIL) {
-    const t = SEQUENCE_UNTIL === 0 ? 0 : p / SEQUENCE_UNTIL;
+    const t = p / SEQUENCE_UNTIL;
     const idx = Math.min(SEQUENCE_COUNT - 1, Math.round(t * (SEQUENCE_COUNT - 1)));
     const frame = idx + 1;
     const caption =
