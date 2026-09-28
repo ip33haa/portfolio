@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { CameraState } from "../../data/camera";
+import { SEQUENCE_COUNT } from "../../data/assets";
+import { sequenceLoader } from "../../data/sequenceLoader";
 
 type Props = {
   camera: CameraState;
@@ -7,37 +9,117 @@ type Props = {
 };
 
 export function CameraScene({ camera, reduced }: Props) {
-  const [shown, setShown] = useState(camera.plate);
-  const scale = camera.sequenced || reduced ? 1 : camera.scale;
-  const blur = camera.sequenced || reduced ? 0 : camera.blur;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sizeRef = useRef({ w: 0, h: 0 });
+  const staticImgRef = useRef<HTMLImageElement | null>(null);
+
+  // Extract sequence frame index if camera is sequenced
+  const frameMatch = camera.plate.match(/frame_(\d{4})\./);
+  const frameIndex = frameMatch
+    ? Math.min(SEQUENCE_COUNT - 1, Math.max(0, parseInt(frameMatch[1], 10) - 1))
+    : null;
 
   useEffect(() => {
-    if (shown === camera.plate) return;
-    const img = new Image();
-    img.onload = () => setShown(camera.plate);
-    img.src = camera.plate;
-    if (img.complete) {
-      queueMicrotask(() => setShown(camera.plate));
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    const resize = () => {
+      const parent = canvas.parentElement;
+      const w = parent?.clientWidth || window.innerWidth;
+      const h = parent?.clientHeight || window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      sizeRef.current = { w, h };
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas.parentElement || canvas);
+
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    const { w, h } = sizeRef.current;
+    if (w === 0 || h === 0) return;
+
+    const draw = (img: HTMLImageElement) => {
+      if (!img || !img.complete || img.naturalWidth === 0) return;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+      const r = Math.max(w / iw, h / ih);
+      const nw = iw * r;
+      const nh = ih * r;
+      const cx = (w - nw) * 0.5;
+      const cy = (h - nh) * 0.5;
+
+      ctx.save();
+      const scale = camera.sequenced || reduced ? 1 : camera.scale;
+      const rotate = camera.sequenced || reduced ? 0 : camera.rotate;
+      const x = camera.sequenced || reduced ? 0 : camera.x;
+      const y = camera.sequenced || reduced ? 0 : camera.y;
+
+      if (scale !== 1 || rotate !== 0 || x !== 0 || y !== 0) {
+        const ox = w * camera.origin.x;
+        const oy = h * camera.origin.y;
+        ctx.translate(ox + (w * x) / 100, oy + (h * y) / 100);
+        ctx.rotate((rotate * Math.PI) / 180);
+        ctx.scale(scale, scale);
+        ctx.translate(-ox, -oy);
+      }
+
+      ctx.drawImage(img, cx, cy, nw, nh);
+      ctx.restore();
+    };
+
+    if (camera.sequenced && frameIndex !== null) {
+      const img = sequenceLoader.getFrame(frameIndex);
+      if (img && img.complete && img.naturalWidth > 0) {
+        draw(img);
+      } else {
+        // Fallback: load and draw as soon as ready
+        sequenceLoader.preload(frameIndex);
+        const temp = new Image();
+        temp.onload = () => draw(temp);
+        temp.src = camera.plate;
+      }
+    } else {
+      // Static plates (overhead, final wide)
+      if (!staticImgRef.current || staticImgRef.current.src !== camera.plate) {
+        const img = new Image();
+        img.onload = () => draw(img);
+        img.src = camera.plate;
+        staticImgRef.current = img;
+        if (img.complete && img.naturalWidth > 0) {
+          draw(img);
+        }
+      } else {
+        draw(staticImgRef.current);
+      }
     }
-  }, [camera.plate, shown]);
+  }, [camera, frameIndex, reduced]);
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-black">
-      <img
-        src={shown}
-        alt="Interior of a bronze dome with a flowering tree and six glowing crystals"
+      <canvas
+        ref={canvasRef}
         className="h-full w-full object-cover will-change-transform"
         style={{
-          transformOrigin: `${camera.origin.x * 100}% ${camera.origin.y * 100}%`,
-          transform: camera.sequenced
-            ? "none"
-            : `translate3d(${camera.x}%, ${camera.y}%, 0) scale(${scale}) rotate(${camera.rotate}deg)`,
-          filter: blur > 0.05 ? `blur(${blur}px)` : "none",
+          filter: camera.blur > 0.05 && !reduced ? `blur(${camera.blur}px)` : "none",
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/45" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/45" />
       <div
-        className="absolute inset-0 mix-blend-screen"
+        className="pointer-events-none absolute inset-0 mix-blend-screen"
         style={{
           opacity: camera.flash,
           background:

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CinematicExperience } from "../components/CinematicPortfolio/CinematicExperience";
 import { ProjectGrid } from "../components/Portfolio/ProjectGrid";
 import { LoadingScreen } from "../components/UI/LoadingScreen";
-import { preloadImages, sequenceImages, magicImages } from "../data/assets";
+import { preloadImages } from "../data/assets";
 import { useJourneyAudio } from "../hooks/useJourneyAudio";
 
 const ENTERED_KEY = "tree-of-growth:entered";
@@ -56,30 +56,6 @@ export function HomePage() {
     };
   }, [entered]);
 
-  useEffect(() => {
-    if (!entered) return;
-    let cancel = false;
-    const all = [...sequenceImages, ...magicImages];
-    let i = 0;
-    const loadNext = () => {
-      if (cancel || i >= all.length) return;
-      const batch = all.slice(i, i + 8);
-      i += 8;
-      batch.forEach((src) => {
-        const img = new Image();
-        img.src = src;
-      });
-      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-        window.requestIdleCallback(loadNext, { timeout: 150 });
-      } else {
-        setTimeout(loadNext, 50);
-      }
-    };
-    loadNext();
-    return () => {
-      cancel = true;
-    };
-  }, [entered]);
 
   return (
     <>

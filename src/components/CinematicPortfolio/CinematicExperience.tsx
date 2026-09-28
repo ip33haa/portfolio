@@ -78,7 +78,7 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
         <CameraScene camera={camera} reduced={reduced} />
         <TreeScene intensity={camera.sequenced ? 0.35 : camera.sceneIndex <= 1 ? 1 : 0.35} />
         <CrystalScene crystal={scene.crystal} glow={Math.min(1, camera.glow + velocity * 0.25)} />
-        <ParticleLayer color={scene.accent} density={isMobile ? 50 : 90} enabled={!reduced} />
+        <ParticleLayer color={scene.accent} density={isMobile ? 20 : 35} enabled={!reduced} />
         <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
         <CrystalNavigation activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
         <ScrollProgress progress={progress} />

@@ -11,7 +11,13 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (reduced) return;
-    const lenis = new Lenis({ autoRaf: true });
+    const lenis = new Lenis({
+      autoRaf: true,
+      duration: 0.85,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.2,
+      smoothWheel: true,
+    });
     lenisRef.current = lenis;
     return () => {
       lenis.destroy();

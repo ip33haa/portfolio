@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { contact } from "../../data/contact";
-import { MAGIC_COUNT, MAGIC_CV_FROM, magicFrame, magicImages } from "../../data/assets";
+import { MAGIC_COUNT, MAGIC_CV_FROM, magicFrame } from "../../data/assets";
 import { useScrollProgress } from "../../hooks/useScrollProgress";
 
 export function MagicSequence() {
@@ -19,21 +19,14 @@ export function MagicSequence() {
   }, [shown, src]);
 
   useEffect(() => {
-    magicImages.forEach((url) => {
+    // Only preload surrounding window around current index
+    const start = Math.max(0, index - 2);
+    const end = Math.min(MAGIC_COUNT - 1, index + 12);
+    for (let i = start; i <= end; i++) {
       const img = new Image();
-      img.src = url;
-    });
-  }, []);
-
-  const nearby = useMemo(() => {
-    const next = Math.min(MAGIC_COUNT - 1, index + 1);
-    return magicFrame(next);
+      img.src = magicFrame(i);
+    }
   }, [index]);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = nearby;
-  }, [nearby]);
 
   return (
     <section
