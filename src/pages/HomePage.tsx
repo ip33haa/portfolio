@@ -58,10 +58,27 @@ export function HomePage() {
 
   useEffect(() => {
     if (!entered) return;
-    [...sequenceImages, ...magicImages].forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
+    let cancel = false;
+    const all = [...sequenceImages, ...magicImages];
+    let i = 0;
+    const loadNext = () => {
+      if (cancel || i >= all.length) return;
+      const batch = all.slice(i, i + 8);
+      i += 8;
+      batch.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+      if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+        window.requestIdleCallback(loadNext, { timeout: 150 });
+      } else {
+        setTimeout(loadNext, 50);
+      }
+    };
+    loadNext();
+    return () => {
+      cancel = true;
+    };
   }, [entered]);
 
   return (

@@ -7,6 +7,16 @@ import {
   SEQUENCE_COUNT,
   SEQUENCE_CRYSTAL1_FROM,
   SEQUENCE_CRYSTAL1_UNTIL,
+  SEQUENCE_CRYSTAL2_FROM,
+  SEQUENCE_CRYSTAL2_UNTIL,
+  SEQUENCE_CRYSTAL3_FROM,
+  SEQUENCE_CRYSTAL3_UNTIL,
+  SEQUENCE_CRYSTAL4_FROM,
+  SEQUENCE_CRYSTAL4_UNTIL,
+  SEQUENCE_CRYSTAL5_FROM,
+  SEQUENCE_CRYSTAL5_UNTIL,
+  SEQUENCE_CRYSTAL6_FROM,
+  SEQUENCE_CRYSTAL6_UNTIL,
   SEQUENCE_UNTIL,
   SEQUENCE_WELCOME_UNTIL,
 } from "./assets";
@@ -42,15 +52,9 @@ type Keyframe = {
 };
 
 const frames: Keyframe[] = [
-  { at: SEQUENCE_UNTIL, plate: sequenceFrame(SEQUENCE_COUNT - 1), origin: focus.c1, scale: 1, x: 0, y: 0, rotate: 0, blur: 0, flash: 0, glow: 0.85, sceneIndex: 2 },
-  { at: 0.36, plate: plates.crystals[2], origin: focus.c2, scale: 2.45, x: 4, y: 3, rotate: 0.6, blur: 1.5, flash: 0, glow: 0.9, sceneIndex: 3 },
-  { at: 0.46, plate: plates.crystals[3], origin: focus.c3, scale: 2.4, x: -5, y: 3, rotate: -0.8, blur: 1.4, flash: 0, glow: 0.9, sceneIndex: 4 },
-  { at: 0.56, plate: plates.crystals[4], origin: focus.c4, scale: 2.55, x: 3, y: 6, rotate: 0.5, blur: 1.3, flash: 0, glow: 1, sceneIndex: 5 },
-  { at: 0.66, plate: plates.crystals[5], origin: focus.c5, scale: 2.5, x: -3, y: 2, rotate: 0.2, blur: 1.5, flash: 0, glow: 1, sceneIndex: 6 },
-  { at: 0.72, plate: plates.crystals[6], origin: focus.c6, scale: 3.2, x: 6, y: 2, rotate: 0.4, blur: 0.6, flash: 0.15, glow: 1, sceneIndex: 7 },
-  { at: 0.78, plate: plates.crystals[6], origin: focus.c6, scale: 3.8, x: 8, y: 1, rotate: 0.2, blur: 0, flash: 1, glow: 1, sceneIndex: 7 },
-  { at: 0.84, plate: plates.top, origin: focus.overhead, scale: 1.12, x: 0, y: 0, rotate: 4, blur: 0.3, flash: 0, glow: 0.7, sceneIndex: 8 },
-  { at: 0.92, plate: plates.final, origin: focus.wide, scale: 1.08, x: 0, y: 0, rotate: 1.5, blur: 0, flash: 0, glow: 0.55, sceneIndex: 9 },
+  { at: SEQUENCE_UNTIL, plate: sequenceFrame(SEQUENCE_COUNT - 1), origin: focus.c6, scale: 1, x: 0, y: 0, rotate: 0, blur: 0, flash: 0, glow: 1, sceneIndex: 7 },
+  { at: 0.88, plate: plates.top, origin: focus.overhead, scale: 1.12, x: 0, y: 0, rotate: 2, blur: 0.3, flash: 0, glow: 0.7, sceneIndex: 8 },
+  { at: 0.94, plate: plates.final, origin: focus.wide, scale: 1.08, x: 0, y: 0, rotate: 1, blur: 0, flash: 0, glow: 0.55, sceneIndex: 9 },
   { at: 1, plate: plates.final, origin: focus.wide, scale: 1.04, x: 0, y: 0, rotate: 0, blur: 0, flash: 0, glow: 0.4, sceneIndex: 9 },
 ];
 
@@ -73,17 +77,36 @@ export function cameraAt(progress: number): CameraState {
     const t = p / SEQUENCE_UNTIL;
     const idx = Math.min(SEQUENCE_COUNT - 1, Math.round(t * (SEQUENCE_COUNT - 1)));
     const frame = idx + 1;
-    const caption =
-      frame <= SEQUENCE_WELCOME_UNTIL
-        ? 0
-        : frame >= SEQUENCE_BEGINNING_FROM && frame <= SEQUENCE_BEGINNING_UNTIL
-          ? 1
-          : frame >= SEQUENCE_CRYSTAL1_FROM && frame <= SEQUENCE_CRYSTAL1_UNTIL
-            ? 2
-            : null;
-    const sceneIndex =
-      caption ??
-      (frame < SEQUENCE_BEGINNING_FROM ? 0 : frame < SEQUENCE_CRYSTAL1_FROM ? 1 : 2);
+
+    let sceneIndex = 0;
+    let textVisible = false;
+
+    if (frame <= SEQUENCE_WELCOME_UNTIL) {
+      sceneIndex = 0;
+      textVisible = frame <= SEQUENCE_WELCOME_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL1_FROM) {
+      sceneIndex = 1;
+      textVisible = frame >= SEQUENCE_BEGINNING_FROM && frame <= SEQUENCE_BEGINNING_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL2_FROM) {
+      sceneIndex = 2;
+      textVisible = frame >= SEQUENCE_CRYSTAL1_FROM && frame <= SEQUENCE_CRYSTAL1_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL3_FROM) {
+      sceneIndex = 3;
+      textVisible = frame >= SEQUENCE_CRYSTAL2_FROM && frame <= SEQUENCE_CRYSTAL2_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL4_FROM) {
+      sceneIndex = 4;
+      textVisible = frame >= SEQUENCE_CRYSTAL3_FROM && frame <= SEQUENCE_CRYSTAL3_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL5_FROM) {
+      sceneIndex = 5;
+      textVisible = frame >= SEQUENCE_CRYSTAL4_FROM && frame <= SEQUENCE_CRYSTAL4_UNTIL;
+    } else if (frame < SEQUENCE_CRYSTAL6_FROM) {
+      sceneIndex = 6;
+      textVisible = frame >= SEQUENCE_CRYSTAL5_FROM && frame <= SEQUENCE_CRYSTAL5_UNTIL;
+    } else {
+      sceneIndex = 7;
+      textVisible = frame >= SEQUENCE_CRYSTAL6_FROM && frame <= SEQUENCE_CRYSTAL6_UNTIL;
+    }
+
     return {
       plate: sequenceFrame(idx),
       origin: { x: 0.5, y: 0.5 },
@@ -93,10 +116,10 @@ export function cameraAt(progress: number): CameraState {
       rotate: 0,
       blur: 0,
       flash: 0,
-      glow: frame >= SEQUENCE_CRYSTAL1_FROM ? 0.85 : 0.22 + t * 0.18,
+      glow: sceneIndex >= 2 ? 0.85 : 0.22 + t * 0.18,
       sceneIndex,
       sequenced: true,
-      textVisible: caption !== null,
+      textVisible,
     };
   }
 
@@ -123,7 +146,7 @@ export function cameraAt(progress: number): CameraState {
   };
 }
 
-export const cinematicLengthVh = 1100;
+export const cinematicLengthVh = 2200;
 
 function progressAtFrame(frame: number) {
   return ((frame - 1) / (SEQUENCE_COUNT - 1)) * SEQUENCE_UNTIL;
@@ -131,13 +154,13 @@ function progressAtFrame(frame: number) {
 
 export const sceneScrollAt = [
   0,
-  progressAtFrame(SEQUENCE_BEGINNING_FROM),
-  progressAtFrame(SEQUENCE_CRYSTAL1_FROM),
-  0.32,
-  0.42,
-  0.52,
-  0.62,
-  0.7,
-  0.84,
-  0.92,
+  progressAtFrame(SEQUENCE_BEGINNING_FROM + 5),
+  progressAtFrame(SEQUENCE_CRYSTAL1_FROM + 9),
+  progressAtFrame(SEQUENCE_CRYSTAL2_FROM + 13),
+  progressAtFrame(SEQUENCE_CRYSTAL3_FROM + 20),
+  progressAtFrame(SEQUENCE_CRYSTAL4_FROM + 14),
+  progressAtFrame(SEQUENCE_CRYSTAL5_FROM + 11),
+  progressAtFrame(SEQUENCE_CRYSTAL6_FROM + 8),
+  0.88,
+  0.95,
 ];

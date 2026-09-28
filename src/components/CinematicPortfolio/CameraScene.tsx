@@ -16,6 +16,9 @@ export function CameraScene({ camera, reduced }: Props) {
     const img = new Image();
     img.onload = () => setShown(camera.plate);
     img.src = camera.plate;
+    if (img.complete) {
+      queueMicrotask(() => setShown(camera.plate));
+    }
   }, [camera.plate, shown]);
 
   return (
