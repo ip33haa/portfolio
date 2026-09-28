@@ -31,7 +31,7 @@ export const MAGIC_CV_FROM = 205;
 
 export function magicFrame(index: number) {
   const n = String(Math.min(MAGIC_COUNT, Math.max(1, index + 1))).padStart(4, "0");
-  return `/images/magic/frame_${n}.png`;
+  return `/images/magic/frame_${n}.webp`;
 }
 
 export const plates = {

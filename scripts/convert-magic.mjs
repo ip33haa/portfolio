@@ -15,18 +15,22 @@ const files = fs
   .sort();
 
 async function convert() {
-  let i = 0;
-  for (const name of files) {
-    i += 1;
-    const n = String(i).padStart(4, "0");
-    const output = path.join(destDir, `frame_${n}.png`);
-    await sharp(path.join(srcDir, name))
-      .resize({ width: 2560, withoutEnlargement: true })
-      .png({ compressionLevel: 6, adaptiveFiltering: true })
-      .toFile(output);
-    console.log("wrote", path.basename(output), Math.round(fs.statSync(output).size / 1024), "KB");
+  const batchSize = 24;
+  for (let i = 0; i < files.length; i += batchSize) {
+    const batch = files.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map(async (name, idx) => {
+        const frameIdx = i + idx + 1;
+        const n = String(frameIdx).padStart(4, "0");
+        const output = path.join(destDir, `frame_${n}.webp`);
+        await sharp(path.join(srcDir, name))
+          .resize(1920, 1080, { fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 72, effort: 3 })
+          .toFile(output);
+      })
+    );
   }
-  console.log("magic frames", files.length);
+  console.log("magic frames converted:", files.length);
 }
 
 convert().catch((err) => {
