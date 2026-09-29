@@ -29,7 +29,7 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
   const trackRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const simplify = reduced || isMobile;
+  const simplify = reduced;
   const { progress, scrollYProgress } = useScrollProgress(trackRef);
   const velocity = useScrollVelocity(scrollYProgress);
 
@@ -80,7 +80,7 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
         <CrystalScene crystal={scene.crystal} glow={Math.min(1, camera.glow + velocity * 0.25)} />
         <ParticleLayer color={scene.accent} density={isMobile ? 20 : 35} enabled={!reduced} />
         <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
-        <CrystalNavigation activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
+        <CrystalNavigation mobile={isMobile} activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
         <ScrollProgress progress={progress} />
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center p-6 sm:p-10 md:px-16 md:py-24">
           <SceneText scene={scene} visible={camera.textVisible} />
