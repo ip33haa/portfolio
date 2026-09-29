@@ -1,5 +1,5 @@
 import { ChevronDown, Globe, Mouse, Volume2, VolumeX } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { cameraAt, cinematicLengthVh, sceneScrollAt } from "../../data/camera";
 import { contact } from "../../data/contact";
@@ -82,17 +82,17 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
         <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
         <CrystalNavigation activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
         <ScrollProgress progress={progress} />
-        <div className="pointer-events-none absolute inset-0 z-20 flex items-center p-10 md:px-16 md:py-24">
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center p-6 sm:p-10 md:px-16 md:py-24">
           <SceneText scene={scene} visible={camera.textVisible} />
         </div>
         {camera.sceneIndex === 0 && camera.textVisible ? <ScrollToBegin /> : null}
         {camera.sceneIndex === 8 ? (
-          <p className="absolute right-16 bottom-16 z-30 text-[10px] tracking-[0.28em] text-white/50">
+          <p className="absolute right-6 sm:right-16 bottom-16 z-30 text-[10px] tracking-[0.28em] text-white/50">
             01 → 02 → 03 → 04 → 05 → 06
           </p>
         ) : null}
         {camera.sceneIndex === 9 ? (
-          <div className="absolute right-8 bottom-16 z-30 md:right-16">
+          <div className="absolute right-6 sm:right-8 bottom-16 z-30 md:right-16">
             <ClosingActions />
           </div>
         ) : null}
@@ -105,7 +105,7 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
 
 function ScrollToBegin() {
   return (
-    <div className="pointer-events-none absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55">
+    <div className="pointer-events-none absolute bottom-20 md:bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55">
       <p className="flex items-center gap-3 text-[10px] tracking-[0.32em]">
         <Icon icon={Mouse} label="Scroll" className="h-4 w-4" />
         SCROLL TO BEGIN
@@ -118,13 +118,13 @@ function ScrollToBegin() {
 function Hud({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () => void }) {
   return (
     <>
-      <Link to="/" className="fixed top-6 left-6 z-40 text-xs tracking-[0.4em] text-white/80">
+      <Link to="/" className="fixed top-4 sm:top-6 left-4 sm:left-6 z-40 text-xs tracking-[0.3em] sm:tracking-[0.4em] text-white/80">
         {contact.shortName}
       </Link>
       <button
         type="button"
         onClick={onToggleSound}
-        className="fixed top-6 right-16 z-40 inline-flex items-center text-white/70 hover:text-white md:right-6"
+        className="fixed top-4 sm:top-6 right-4 sm:right-6 z-40 inline-flex items-center text-white/70 hover:text-white p-1 sm:p-0"
         aria-pressed={soundOn}
         aria-label={soundOn ? "Sound on" : "Sound off"}
       >
@@ -139,19 +139,37 @@ function Hud({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
 
 function ClosingActions() {
   return (
-    <div className="relative z-30 flex flex-col items-start gap-4 md:items-end">
+    <div className="relative z-30 flex flex-col items-start gap-3 sm:gap-4 md:items-end">
       <Button href="#work">EXPLORE MY WORK</Button>
       <Button href={`mailto:${contact.email}`} variant="ghost">
         LET'S CONNECT
       </Button>
-      <div className="mt-2 flex gap-4 text-white/70">
-        <a href={contact.github} target="_blank" rel="noreferrer" aria-label="GitHub" className="h-4 w-4">
+      <div className="mt-2 flex gap-3 text-white/70">
+        <a
+          href={contact.github}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="GitHub"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:text-white transition"
+        >
           <GitHubMark />
         </a>
-        <a href={contact.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="h-4 w-4">
+        <a
+          href={contact.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="LinkedIn"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:text-white transition"
+        >
           <LinkedInMark />
         </a>
-        <a href={contact.website} target="_blank" rel="noreferrer" aria-label="Website">
+        <a
+          href={contact.website}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Website"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 hover:border-white/30 hover:text-white transition"
+        >
           <Icon icon={Globe} label="Website" />
         </a>
       </div>
@@ -189,18 +207,49 @@ function CinematicPanels({
   particleColor: string;
   particlesEnabled: boolean;
 }) {
+  const [activeCrystal, setActiveCrystal] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const crystalStr = entry.target.getAttribute("data-crystal");
+            if (crystalStr) {
+              setActiveCrystal(parseInt(crystalStr, 10));
+            } else {
+              setActiveCrystal(undefined);
+            }
+          }
+        });
+      },
+      { threshold: 0.45 }
+    );
+
+    journey.forEach((s) => {
+      const el = document.getElementById(`scene-${s.id}`);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div>
+    <div data-testid="cinematic-track">
       <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
       <div className="pointer-events-none fixed inset-0 z-[12]">
-        <ParticleLayer color={particleColor} density={50} enabled={particlesEnabled} />
+        <ParticleLayer color={particleColor} density={25} enabled={particlesEnabled} />
       </div>
-      <CrystalNavigation mobile onSelect={onSelectCrystal} />
+      <CrystalNavigation mobile activeCrystal={activeCrystal} onSelect={onSelectCrystal} />
       {journey.map((scene, index) => {
         const cam = cameraAt(sceneScrollAt[index] ?? 0);
         return (
           <Scene key={scene.id} className="overflow-hidden">
-            <div id={`scene-${scene.id}`} className="absolute top-0" />
+            <div
+              id={`scene-${scene.id}`}
+              data-crystal={scene.crystal ?? ""}
+              className="pointer-events-none absolute inset-0"
+            />
             <img
               src={cam.plate}
               alt="Dome garden with the Tree of Growth and crystals"
@@ -211,7 +260,7 @@ function CinematicPanels({
               }}
             />
             <div className="absolute inset-0 bg-black/55" />
-            <div className="relative z-10 flex min-h-dvh flex-col justify-end gap-8 p-6 pb-24">
+            <div className="relative z-10 flex min-h-dvh flex-col justify-end gap-6 sm:gap-8 p-4 sm:p-6 md:p-10 pb-24 sm:pb-28">
               <SceneText scene={scene} visible compact />
               {scene.id === "growing" ? <ClosingActions /> : null}
             </div>

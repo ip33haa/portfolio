@@ -27,21 +27,21 @@ export function ProjectCaseStudy({ project }: Props) {
   ];
 
   return (
-    <article className="min-h-dvh bg-[#07080a] px-6 py-20 text-white md:px-16">
-      <Link to="/#work" className="text-[11px] tracking-[0.24em] text-white/50 uppercase">
+    <article className="min-h-dvh bg-[#07080a] px-4 sm:px-6 md:px-12 lg:px-16 py-12 sm:py-20 text-white">
+      <Link to="/#work" className="inline-flex items-center gap-1.5 py-1 text-[10px] sm:text-[11px] tracking-[0.2em] sm:tracking-[0.24em] text-white/50 hover:text-white uppercase transition">
         ← Back to projects
       </Link>
-      <header className="mt-10 max-w-4xl">
-        <p className="text-[11px] tracking-[0.28em] uppercase" style={{ color: project.glow }}>
+      <header className="mt-6 sm:mt-10 max-w-4xl">
+        <p className="text-[10px] sm:text-[11px] tracking-[0.24em] sm:tracking-[0.28em] uppercase" style={{ color: project.glow }}>
           {project.role}
           {project.year ? ` · ${project.year}` : ""}
         </p>
-        <h1 className="mt-4 text-4xl font-light tracking-wide md:text-6xl">{project.title}</h1>
+        <h1 className="mt-3 sm:mt-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light tracking-wide">{project.title}</h1>
       </header>
       <img
         src={project.image}
         alt=""
-        className="mt-12 h-72 w-full rounded-sm object-cover object-top opacity-90 md:h-[420px]"
+        className="mt-8 sm:mt-12 h-56 sm:h-72 md:h-[420px] w-full rounded-sm object-cover object-top opacity-90"
       />
       {project.screenshots && project.screenshots.length > 1 ? (
         <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -55,7 +55,7 @@ export function ProjectCaseStudy({ project }: Props) {
           ))}
         </ul>
       ) : null}
-      <div className="mt-14 space-y-12">
+      <div className="mt-12 sm:mt-14 space-y-10 sm:space-y-12">
         <Block title="Overview" body={project.overview} />
         <Block title="Situation" body={project.situation} />
         <Block title="Task" body={project.task} />
@@ -87,9 +87,9 @@ export function ProjectCaseStudy({ project }: Props) {
           </section>
         ) : null}
       </div>
-      <nav className="mt-20 flex items-center justify-between border-t border-white/10 pt-8 text-[11px] tracking-[0.2em] uppercase">
+      <nav className="mt-16 sm:mt-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-t border-white/10 pt-6 sm:pt-8 text-[10px] sm:text-[11px] tracking-[0.18em] sm:tracking-[0.2em] uppercase">
         {prev ? (
-          <Link to={`/work/${prev.slug}`} className="flex items-center gap-2 text-white/70">
+          <Link to={`/work/${prev.slug}`} className="flex items-center gap-2 text-white/70 hover:text-white py-1">
             <Icon icon={ArrowLeft} label="Previous" />
             Previous project
           </Link>
@@ -97,7 +97,7 @@ export function ProjectCaseStudy({ project }: Props) {
           <span />
         )}
         {next ? (
-          <Link to={`/work/${next.slug}`} className="flex items-center gap-2 text-white/70">
+          <Link to={`/work/${next.slug}`} className="flex items-center justify-end gap-2 text-white/70 hover:text-white py-1 sm:ml-auto">
             Next project
             <Icon icon={ArrowRight} label="Next" />
           </Link>

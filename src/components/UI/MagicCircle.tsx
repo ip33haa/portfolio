@@ -78,7 +78,7 @@ export function MagicCircle({ progress, ready }: Props) {
   void ready;
 
   return (
-    <div className="relative h-[min(70vw,380px)] w-[min(70vw,380px)] overflow-hidden rounded-full">
+    <div className="relative h-[min(65vw,48vh,360px)] w-[min(65vw,48vh,360px)] overflow-hidden rounded-full">
       <Canvas
         gl={{ alpha: true, antialias: true }}
         camera={{ position: [0, 0, 28], fov: 24, near: 0.1, far: 80 }}

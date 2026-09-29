@@ -16,6 +16,7 @@ export function SpellbookCard({ project }: Props) {
       ref={ref}
       to={`/work/${project.slug}`}
       onMouseMove={(event) => {
+        if (window.matchMedia("(pointer: coarse)").matches) return;
         const box = ref.current?.getBoundingClientRect();
         if (!box) return;
         const px = (event.clientX - box.left) / box.width - 0.5;
@@ -34,7 +35,7 @@ export function SpellbookCard({ project }: Props) {
           boxShadow: `0 20px 50px rgba(0,0,0,0.45), inset 0 0 40px ${project.glow}22`,
         }}
       >
-        <div className="relative h-44 overflow-hidden">
+        <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
           <img
             src={project.image}
             alt={project.title}
@@ -42,8 +43,8 @@ export function SpellbookCard({ project }: Props) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#14110e] to-transparent" />
         </div>
-        <div className="space-y-3 p-5">
-          <p className="text-[10px] tracking-[0.28em] uppercase" style={{ color: project.glow }}>
+        <div className="space-y-2.5 sm:space-y-3 p-4 sm:p-5">
+          <p className="text-[10px] tracking-[0.24em] sm:tracking-[0.28em] uppercase" style={{ color: project.glow }}>
             {project.role}
             {project.year ? ` · ${project.year}` : ""}
           </p>

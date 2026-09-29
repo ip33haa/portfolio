@@ -117,20 +117,30 @@ export function MagicSequence() {
           className="h-full w-full object-cover will-change-transform"
         />
         {showCv ? (
-          <a
-            href={contact.cv}
-            target="_blank"
-            rel="noreferrer"
-            data-testid="cv-paper"
-            className="absolute left-[31.8%] top-[0%] z-10 block h-[100%] w-[40%] overflow-hidden bg-white"
-            aria-label="Open CV"
-          >
-            <img
-              src={contact.cvPreview}
-              alt="John Philip Garcia CV"
-              className="h-full w-full object-cover"
-            />
-          </a>
+          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center p-4">
+            <a
+              href={contact.cv}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="cv-paper"
+              className="pointer-events-auto group relative block overflow-hidden rounded-md border border-white/20 bg-white shadow-2xl transition duration-300 hover:scale-[1.01] hover:border-sky-400 max-h-[82dvh] w-full max-w-[420px] aspect-[1/1.414] md:absolute md:max-h-none md:max-w-none md:aspect-auto md:left-[31.8%] md:top-0 md:h-full md:w-[40%] md:rounded-none md:border-0"
+              aria-label="Open John Philip Garcia CV"
+            >
+              <img
+                src={contact.cvPreview}
+                alt="John Philip Garcia CV"
+                className="h-full w-full object-cover object-top"
+              />
+              <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-black/85 px-4 py-2.5 backdrop-blur-md transition group-hover:bg-black/95 md:hidden">
+                <span className="text-[10px] font-medium tracking-[0.2em] text-white/90 uppercase sm:text-[11px]">
+                  View & Download CV
+                </span>
+                <span className="flex items-center gap-1.5 text-[10px] font-semibold tracking-wider text-sky-400 uppercase">
+                  PDF <span className="transition duration-200 group-hover:translate-x-0.5">↗</span>
+                </span>
+              </div>
+            </a>
+          </div>
         ) : null}
       </div>
     </section>
