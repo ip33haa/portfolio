@@ -50,8 +50,11 @@ export function HomePage() {
   }, []);
 
   useEffect(() => {
+    const html = document.documentElement;
+    html.style.overflow = entered ? "" : "hidden";
     document.body.style.overflow = entered ? "" : "hidden";
     return () => {
+      html.style.overflow = "";
       document.body.style.overflow = "";
     };
   }, [entered]);

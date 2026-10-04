@@ -23,6 +23,8 @@ const sites = [
   { file: "obp-careers.png", url: "https://www.obpcareers.com/" },
   { file: "fta.png", url: "https://ftalliance.com.au/" },
   { file: "map-cargo.png", url: "https://www.mapcargo.com/" },
+  { file: "element-lab.png", url: "https://element-table-three.vercel.app/" },
+  { file: "billy-pura.png", url: "https://billy-portfolio-alpha.vercel.app/" },
 ];
 
 const browser = await chromium.launch();

@@ -1,4 +1,4 @@
-import { ChevronDown, Globe, Mouse, Volume2, VolumeX } from "lucide-react";
+import { Globe, Mouse, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { cameraAt, cinematicLengthVh, sceneScrollAt } from "../../data/camera";
@@ -6,9 +6,11 @@ import { contact } from "../../data/contact";
 import { journey } from "../../data/journey";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useReducedMotion } from "../../hooks/useReducedMotion";
+import { usePointerParallax } from "../../hooks/usePointerParallax";
 import { useScrollProgress, useScrollVelocity } from "../../hooks/useScrollProgress";
 import { Button } from "../UI/Button";
 import { MagicSequence } from "./MagicSequence";
+import { HallAtmosphere } from "./HallAtmosphere";
 import { Icon } from "../UI/Icon";
 import { CameraScene } from "./CameraScene";
 import { CrystalNavigation } from "./CrystalNavigation";
@@ -32,6 +34,7 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
   const simplify = reduced;
   const { progress, scrollYProgress } = useScrollProgress(trackRef);
   const velocity = useScrollVelocity(scrollYProgress);
+  const parallax = usePointerParallax(!simplify && !isMobile);
 
   const camera = useMemo(() => cameraAt(simplify ? 0 : progress), [progress, simplify]);
   const scene = journey[camera.sceneIndex] ?? journey[0];
@@ -75,24 +78,30 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
     <>
     <div ref={trackRef} data-testid="cinematic-track" className="relative" style={{ height: `${cinematicLengthVh}vh` }}>
       <div className="sticky top-0 h-dvh overflow-hidden">
-        <CameraScene camera={camera} reduced={reduced} />
+        <CameraScene camera={camera} reduced={reduced} parallax={parallax} />
         <TreeScene intensity={camera.sequenced ? 0.35 : camera.sceneIndex <= 1 ? 1 : 0.35} />
         <CrystalScene crystal={scene.crystal} glow={Math.min(1, camera.glow + velocity * 0.25)} />
-        <ParticleLayer color={scene.accent} density={isMobile ? 20 : 35} enabled={!reduced} />
-        <Hud soundOn={soundOn} onToggleSound={onToggleSound} />
+        <HallAtmosphere glow={camera.glow} />
+        <ParticleLayer color={scene.accent} density={isMobile ? 32 : 58} enabled={!reduced} />
+        <Hud soundOn={soundOn} onToggleSound={onToggleSound} chapter={scene.number} />
         <CrystalNavigation mobile={isMobile} activeCrystal={scene.crystal} onSelect={jumpToCrystal} />
         <ScrollProgress progress={progress} />
-        <div className="pointer-events-none absolute inset-0 z-20 flex items-center p-6 sm:p-10 md:px-16 md:py-24">
+        <div
+          className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center px-5 will-change-transform sm:px-10"
+          style={{
+            transform: `translate3d(${parallax.x * -36}px, ${parallax.y * -22}px, 0)`,
+          }}
+        >
           <SceneText scene={scene} visible={camera.textVisible} />
         </div>
         {camera.sceneIndex === 0 && camera.textVisible ? <ScrollToBegin /> : null}
         {camera.sceneIndex === 8 ? (
-          <p className="absolute right-6 sm:right-16 bottom-16 z-30 text-[10px] tracking-[0.28em] text-white/50">
-            01 → 02 → 03 → 04 → 05 → 06
+          <p className="absolute inset-x-0 bottom-16 z-30 text-center text-[10px] tracking-[0.42em] text-white/45">
+            01  —  02  —  03  —  04  —  05  —  06
           </p>
         ) : null}
         {camera.sceneIndex === 9 ? (
-          <div className="absolute right-6 sm:right-8 bottom-16 z-30 md:right-16">
+          <div className="absolute inset-x-0 bottom-16 z-30 flex justify-center px-6">
             <ClosingActions />
           </div>
         ) : null}
@@ -105,30 +114,43 @@ export function CinematicExperience({ entered, soundOn, onToggleSound }: Props) 
 
 function ScrollToBegin() {
   return (
-    <div className="pointer-events-none absolute bottom-20 md:bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 text-white/55">
-      <p className="flex items-center gap-3 text-[10px] tracking-[0.32em]">
-        <Icon icon={Mouse} label="Scroll" className="h-4 w-4" />
-        SCROLL TO BEGIN
+    <div className="pointer-events-none absolute bottom-10 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-4 text-white/50 md:bottom-12">
+      <span className="scroll-spine h-16 w-px origin-top bg-white/70" />
+      <p className="flex items-center gap-3 text-[10px] tracking-[0.42em]">
+        <Icon icon={Mouse} label="Scroll" className="h-3.5 w-3.5" />
+        SCROLL
       </p>
-      <Icon icon={ChevronDown} label="Scroll down" className="scroll-hint-arrow h-6 w-6" />
     </div>
   );
 }
 
-function Hud({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () => void }) {
+function Hud({
+  soundOn,
+  onToggleSound,
+  chapter,
+}: {
+  soundOn: boolean;
+  onToggleSound: () => void;
+  chapter?: string;
+}) {
   return (
     <>
-      <Link to="/" className="fixed top-4 sm:top-6 left-4 sm:left-6 z-40 text-xs tracking-[0.3em] sm:tracking-[0.4em] text-white/80">
+      <Link to="/" className="fixed top-5 left-5 z-40 text-[11px] tracking-[0.46em] text-white/70 sm:top-7 sm:left-8">
         {contact.shortName}
       </Link>
+      {chapter ? (
+        <p className="pointer-events-none fixed top-5 left-1/2 z-40 hidden -translate-x-1/2 text-[10px] tracking-[0.5em] text-white/40 sm:top-7 md:block">
+          {chapter}  /  10
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={onToggleSound}
-        className="fixed top-4 sm:top-6 right-4 sm:right-6 z-40 inline-flex items-center text-white/70 hover:text-white p-1 sm:p-0"
+        className="fixed top-5 right-5 z-40 inline-flex items-center p-1 text-white/70 hover:text-white sm:top-7 sm:right-8"
         aria-pressed={soundOn}
         aria-label={soundOn ? "Sound on" : "Sound off"}
       >
-        <span className="mr-2 hidden text-[10px] tracking-[0.22em] md:inline">
+        <span className="mr-2 hidden text-[10px] tracking-[0.28em] md:inline">
           {soundOn ? "SOUND ON" : "SOUND OFF"}
         </span>
         <Icon icon={soundOn ? Volume2 : VolumeX} label={soundOn ? "Sound on" : "Sound off"} />
@@ -139,7 +161,7 @@ function Hud({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
 
 function ClosingActions() {
   return (
-    <div className="relative z-30 flex flex-col items-start gap-3 sm:gap-4 md:items-end">
+    <div className="relative z-30 flex flex-col items-center gap-3 sm:gap-4">
       <Button href="#work">EXPLORE MY WORK</Button>
       <Button href={`mailto:${contact.email}`} variant="ghost">
         LET'S CONNECT
@@ -173,7 +195,7 @@ function ClosingActions() {
           <Icon icon={Globe} label="Website" />
         </a>
       </div>
-      <p className="text-[10px] tracking-[0.28em] text-white/45">SCROLL TO EXPLORE MY WORK</p>
+      <p className="text-[10px] tracking-[0.36em] text-white/45">KEEP SCROLLING</p>
     </div>
   );
 }

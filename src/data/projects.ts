@@ -176,6 +176,49 @@ export const projects: Project[] = [
     glow: "#d4b48a",
   },
   {
+    slug: "element-lab",
+    title: "Element Lab with Zariah",
+    shortDescription:
+      "Interactive periodic-table lab experience with a character-led science story.",
+    role: "Full Stack Developer",
+    technologies: ["React", "Three.js", "Vite"],
+    image: "/images/projects/element-lab.png",
+    liveUrl: "https://element-table-three.vercel.app/",
+    screenshots: [{ label: "Element Lab", href: "/images/projects/element-lab.png" }],
+    overview:
+      "A live 3D-leaning lab where visitors explore the periodic table with Zariah as a guide.",
+    situation:
+      "A science brief needed something more than a static element chart — a space people would actually walk through.",
+    task:
+      "Build an interactive lab site that presents the table as an experience, not a spreadsheet.",
+    action:
+      "Shipped Element Lab with Zariah as a character-led interface for exploring elements in the browser.",
+    result:
+      "The lab is live at element-table-three.vercel.app.",
+    glow: "#5ad4c8",
+  },
+  {
+    slug: "billy-pura",
+    title: "Billy Joe Pura — Creative Portfolio",
+    shortDescription: "Cinematic portfolio site for a multimedia artist.",
+    role: "Full Stack Developer",
+    technologies: ["React", "Next.js", "Tailwind CSS"],
+    image: "/images/projects/billy-pura.png",
+    liveUrl: "https://billy-portfolio-alpha.vercel.app/",
+    screenshots: [{ label: "Billy Joe Pura", href: "/images/projects/billy-pura.png" }],
+    overview:
+      "A live creative portfolio for multimedia artist Billy Joe Pura.",
+    situation:
+      "The artist needed a site that felt like the work — visual, cinematic, not a résumé template.",
+    task:
+      "Design and ship a portfolio that carries the artist’s work as a walkthrough.",
+    action:
+      "Built a custom portfolio experience and published it on Vercel.",
+    result:
+      "The site is live at billy-portfolio-alpha.vercel.app.",
+    glow: "#e8c36a",
+  },
+  {
     slug: "ace",
     title: "Advisor Credit Exchange (ACE)",
     shortDescription:

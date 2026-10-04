@@ -35,11 +35,14 @@ export function SpellbookCard({ project }: Props) {
           boxShadow: `0 20px 50px rgba(0,0,0,0.45), inset 0 0 40px ${project.glow}22`,
         }}
       >
-        <div className="relative h-40 sm:h-44 md:h-48 overflow-hidden">
+        <div className="relative h-40 overflow-hidden sm:h-44 md:h-48">
           <img
             src={project.image}
             alt={project.title}
-            className="h-full w-full object-cover object-top opacity-80 transition duration-500 group-hover:scale-105"
+            className="h-[115%] w-[115%] max-w-none object-cover object-top opacity-80 transition duration-700 ease-out group-hover:scale-110"
+            style={{
+              transform: `translate3d(${tilt.y * -1.4}px, ${tilt.x * 1.2}px, 0)`,
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#14110e] to-transparent" />
         </div>

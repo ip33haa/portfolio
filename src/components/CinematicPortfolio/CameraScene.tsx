@@ -6,9 +6,10 @@ import { sequenceLoader } from "../../data/sequenceLoader";
 type Props = {
   camera: CameraState;
   reduced: boolean;
+  parallax?: { x: number; y: number };
 };
 
-export function CameraScene({ camera, reduced }: Props) {
+export function CameraScene({ camera, reduced, parallax = { x: 0, y: 0 } }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sizeRef = useRef({ w: 0, h: 0 });
   const staticImgRef = useRef<HTMLImageElement | null>(null);
@@ -112,12 +113,15 @@ export function CameraScene({ camera, reduced }: Props) {
     <div className="absolute inset-0 overflow-hidden bg-black">
       <canvas
         ref={canvasRef}
-        className="h-full w-full object-cover will-change-transform"
+        className="h-full w-full origin-center object-cover will-change-transform"
         style={{
           filter: camera.blur > 0.05 && !reduced ? `blur(${camera.blur}px)` : "none",
+          transform: reduced
+            ? undefined
+            : `translate3d(${parallax.x * 22}px, ${parallax.y * 14}px, 0) scale(1.1)`,
         }}
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/45" />
+      <div className="pointer-events-none absolute inset-0 bg-black/15" />
       <div
         className="pointer-events-none absolute inset-0 mix-blend-screen"
         style={{

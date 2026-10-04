@@ -9,12 +9,14 @@ type Props = {
 type Particle = {
   x: number;
   y: number;
+  z: number;
   r: number;
   s: number;
   drift: number;
   a: number;
   twinkle: number;
   twinkleSpeed: number;
+  glow: boolean;
 };
 
 export function ParticleLayer({ color, density, enabled }: Props) {
@@ -31,16 +33,21 @@ export function ParticleLayer({ color, density, enabled }: Props) {
     let frame = 0;
     let running = true;
 
-    const spawn = (): Particle => ({
-      x: Math.random(),
-      y: Math.random(),
-      r: Math.random() * 1.4 + 0.9,
-      s: Math.random() * 0.00035 + 0.00012,
-      drift: (Math.random() - 0.5) * 0.00018,
-      a: Math.random() * 0.28 + 0.22,
-      twinkle: Math.random() * Math.PI * 2,
-      twinkleSpeed: Math.random() * 0.02 + 0.008,
-    });
+    const spawn = (): Particle => {
+      const glow = Math.random() > 0.82;
+      return {
+        x: Math.random(),
+        y: Math.random(),
+        z: Math.random(),
+        r: glow ? Math.random() * 18 + 10 : Math.random() * 1.6 + 0.5,
+        s: glow ? Math.random() * 0.00012 + 0.00004 : Math.random() * 0.00028 + 0.00008,
+        drift: (Math.random() - 0.5) * (glow ? 0.00008 : 0.00016),
+        a: glow ? Math.random() * 0.08 + 0.03 : Math.random() * 0.35 + 0.12,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.018 + 0.006,
+        glow,
+      };
+    };
 
     const particles = Array.from({ length: density }, spawn);
 
@@ -66,22 +73,36 @@ export function ParticleLayer({ color, density, enabled }: Props) {
       ctx.globalCompositeOperation = "lighter";
 
       for (const p of particles) {
-        p.y -= p.s;
-        p.x += p.drift + Math.sin(p.twinkle) * 0.00006;
+        const depth = 0.35 + p.z * 0.9;
+        p.y -= p.s * depth;
+        p.x += p.drift + Math.sin(p.twinkle) * 0.00005;
         p.twinkle += p.twinkleSpeed;
-        if (p.y < -0.02) {
-          p.y = 1.02;
+        if (p.y < -0.08) {
+          p.y = 1.08;
           p.x = Math.random();
         }
-        if (p.x < -0.02) p.x = 1.02;
-        if (p.x > 1.02) p.x = -0.02;
+        if (p.x < -0.04) p.x = 1.04;
+        if (p.x > 1.04) p.x = -0.04;
 
-        const pulse = 0.7 + 0.3 * Math.sin(p.twinkle);
+        const pulse = 0.65 + 0.35 * Math.sin(p.twinkle);
         ctx.globalAlpha = p.a * pulse;
         ctx.fillStyle = colorRef.current;
-        ctx.beginPath();
-        ctx.arc(p.x * width, p.y * height, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        const radius = p.r * depth;
+        const px = p.x * width;
+        const py = p.y * height;
+        if (p.glow) {
+          const g = ctx.createRadialGradient(px, py, 0, px, py, radius);
+          g.addColorStop(0, colorRef.current);
+          g.addColorStop(1, "transparent");
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       ctx.globalAlpha = 1;

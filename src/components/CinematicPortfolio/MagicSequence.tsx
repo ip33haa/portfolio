@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { contact } from "../../data/contact";
 import { MAGIC_COUNT, MAGIC_CV_FROM, magicFrame } from "../../data/assets";
 import { useScrollProgress } from "../../hooks/useScrollProgress";
+import { HallAtmosphere } from "./HallAtmosphere";
 
 export function MagicSequence() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -116,6 +117,7 @@ export function MagicSequence() {
           ref={canvasRef}
           className="h-full w-full object-cover will-change-transform"
         />
+        <HallAtmosphere glow={0.55} />
         {showCv ? (
           <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center p-4">
             <a

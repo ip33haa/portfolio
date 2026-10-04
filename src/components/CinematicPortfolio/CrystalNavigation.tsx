@@ -14,7 +14,7 @@ export function CrystalNavigation({ activeCrystal, onSelect, mobile = false }: P
       aria-label={`${scene.title}`}
       aria-current={activeCrystal === scene.crystal ? "true" : undefined}
       onClick={() => scene.crystal && onSelect(scene.crystal)}
-      className={`grid h-9 w-9 sm:h-8 sm:w-8 place-items-center rounded-full text-[10px] tracking-widest transition duration-200 ${
+      className={`relative z-[1] grid h-9 w-9 sm:h-8 sm:w-8 place-items-center rounded-full text-[10px] tracking-widest transition duration-200 ${
         activeCrystal === scene.crystal ? "text-white scale-110" : "text-white/40 hover:text-white/80 active:scale-95"
       }`}
     >
@@ -45,8 +45,9 @@ export function CrystalNavigation({ activeCrystal, onSelect, mobile = false }: P
   return (
     <nav
       aria-label="Crystal chapters"
-      className="fixed top-1/2 right-4 lg:right-6 z-40 hidden -translate-y-1/2 flex-col gap-1.5 md:flex"
+      className="fixed top-1/2 right-5 z-40 hidden -translate-y-1/2 flex-col items-center gap-2 md:flex lg:right-7"
     >
+      <span aria-hidden className="absolute inset-y-3 w-px bg-white/15" />
       {items}
     </nav>
   );
